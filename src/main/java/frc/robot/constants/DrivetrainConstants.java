@@ -8,14 +8,11 @@ import com.swervedrivespecialties.swervelib.CanPort;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper.GearRatio;
 
-import frc.robot.constants.CANConstants.FrontRightSwerveConstants;
-import frc.robot.constants.CANConstants.BackLeftSwerveConstants;
-import frc.robot.constants.CANConstants.BackRightSwerveConstants;
 import static frc.robot.constants.CANConstants.*;
 
 /** Add your docs here. */
 public final class DrivetrainConstants {
-    public static final CanPort PIGEON_ID = new CanPort(14,GlobalConstants.CANIVORE_NAME);
+    public static final CanPort PIGEON_ID = new CanPort(14,CANIVORE_NAME);
     public static final GearRatio SWERVE_GEAR_RATIO = GearRatio.L2;
     /**
      * The maximum voltage that will be delivered to the drive motors.
@@ -59,33 +56,33 @@ public final class DrivetrainConstants {
     }
 
     public static final class FrontLeftSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(FRONT_LEFT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(3,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(4,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort STEER_MOTOR_ID = new CanPort(FRONT_LEFT_STEER_MOTOR_ID,CANIVORE_NAME);
+        public static final CanPort DRIVE_MOTOR_ID = new CanPort(FRONT_LEFT_DRIVE_MOTOR_ID,CANIVORE_NAME);
+        public static final CanPort ENCODER_ID = new CanPort(FRONT_LEFT_ENCODER_ID, CANIVORE_NAME);
         public static final double ENCODER_OFFSET_RADIANS =  -Math.toRadians(87.2);            
         public static final int STATES_INDEX = 0;
     }
 
     public static final class FrontRightSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(5,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(6,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(7,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort STEER_MOTOR_ID = new CanPort(FRONT_RIGHT_STEER_MOTOR_ID,CANIVORE_NAME);
+        public static final CanPort DRIVE_MOTOR_ID = new CanPort(FRONT_RIGHT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort ENCODER_ID = new CanPort(FRONT_RIGHT_ENCODER_ID,GlobalConstants.CANIVORE_NAME);
         public static final double ENCODER_OFFSET_RADIANS = -Math.toRadians(1.45);
         public static final int STATES_INDEX = 1;
     }
 
     public static final class BackLeftSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(8,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(9,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(10,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort STEER_MOTOR_ID = new CanPort(BACK_LEFT_STEER_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort DRIVE_MOTOR_ID = new CanPort(BACK_LEFT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort ENCODER_ID = new CanPort(BACK_LEFT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
         public static final double ENCODER_OFFSET_RADIANS = -Math.toRadians(87.7);
         public static final int STATES_INDEX = 2;
     }
 
     public static final class BackRightSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(11,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(12,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(13,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort STEER_MOTOR_ID = new CanPort(BACK_RIGHT_STEER_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort DRIVE_MOTOR_ID = new CanPort(BACK_RIGHT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
+        public static final CanPort ENCODER_ID = new CanPort(BACK_RIGHT_ENCODER_ID,GlobalConstants.CANIVORE_NAME);
         public static final double ENCODER_OFFSET_RADIANS =  -Math.toRadians(312.5);
         public static final int STATES_INDEX = 3;
     }
