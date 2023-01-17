@@ -9,32 +9,22 @@ public class CANConstants {
 
     public static final String CANIVORE_NAME = "Canivore";
 
-  
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 3;
-    public static final int FRONT_LEFT_ENCODER_ID = 4;
-    public static final double FRONT_LEFT_ENCODER_OFFSET_RADIANS =  -Math.toRadians(87.2);            
-    public static final int FRONT_LEFT_STATES_INDEX = 0;
-    
-
+    public static final int FRONT_LEFT_ENCODER_ID = 4;        
+   
     public static final int FRONT_RIGHT_STEER_MOTOR_ID = 5;
     public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 6;
     public static final int FRONT_RIGHT_ENCODER_ID = 7;
-    public static final double FRONT_RIGHT_ENCODER_OFFSET_RADIANS = -Math.toRadians(1.45);
-    public static final int FRONT_RIGHT_STATES_INDEX = 1;
-
 
     public static final int BACK_LEFT_STEER_MOTOR_ID = 8;
     public static final int BACK_LEFT_DRIVE_MOTOR_ID = 9;
     public static final int BACK_LEFT_ENCODER_ID = 10;
-    public static final double BACK_LEFTENCODER_OFFSET_RADIANS = -Math.toRadians(87.7);
-    public static final int BACK_LEFT_STATES_INDEX = 2;
 
     public static final int BACK_RIGHT_STEER_MOTOR_ID = 11;
     public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 12;
     public static final int BACK_RIGHT_ENCODER_ID = 13;
-    public static final double BACK_RIGHT_ENCODER_OFFSET_RADIANS =  -Math.toRadians(312.5);
-    public static final int BACK_RIGHT_STATES_INDEX = 3;
+
     }
 
 
