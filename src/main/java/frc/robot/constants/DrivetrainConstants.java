@@ -6,7 +6,7 @@ package frc.robot.constants;
 
 import com.swervedrivespecialties.swervelib.CanPort;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper.GearRatio;
+import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper.GearRatio;
 
 import static frc.robot.constants.CANConstants.*;
 
