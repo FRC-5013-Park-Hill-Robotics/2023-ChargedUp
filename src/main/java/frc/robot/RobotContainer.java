@@ -103,7 +103,7 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		String autoName = SmartDashboard.getString("Auto Selector", AutonomousCommandFactory.BARRIER_STRAIGHT);
+		String autoName = SmartDashboard.getString("Auto Selector", AutonomousCommandFactory.path2HAB);
 		return AutonomousCommandFactory.createAutonomous(this,autoName);
 	}
 
