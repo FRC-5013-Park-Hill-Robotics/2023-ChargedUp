@@ -228,7 +228,7 @@ public class Drivetrain extends SubsystemBase {
 		return new SwerveModulePosition[]{ m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(), m_backLeftModule.getPosition(), m_backRightModule.getPosition() };
 	}
 
-	private void setX() {
+	public void setX() {
 		m_desiredStates[FrontLeftSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
 		m_desiredStates[FrontRightSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
 		m_desiredStates[BackLeftSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
