@@ -19,9 +19,9 @@ import frc.robot.trobot5013lib.command.TrajectoryLogging;
 public class AutonomousCommandFactory {
 	public static double MAX_AUTO_VELOCITY_METERS_PER_SECOND = DrivetrainGeometry.MAX_VELOCITY_METERS_PER_SECOND/2;
 	public static double MAX_AUTO_ANGULAR_RADIANS_PER_SECOND = DrivetrainGeometry.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/2;
-	public static String BARRIER_STRAIGHT = "Barrier Straight";
+	public static String path2HAB = "2HAB";
 
-	public static final String[] AUTOS = {BARRIER_STRAIGHT};
+	public static final String[] AUTOS = {path2HAB};
 
 	public static Command createStartupCommand(RobotContainer container, PathPlannerTrajectory trajectory) {
 		Drivetrain drivetrain = container.getDrivetrain();
@@ -45,23 +45,23 @@ public class AutonomousCommandFactory {
 	}
 
     public static Command createAutonomous(RobotContainer container) {
-		return createBarrierStraight(container);
+		return create2HAB(container);
 	}
 
 	public static Command createAutonomous(RobotContainer container, String name) {
-		if (BARRIER_STRAIGHT.equals(name)) {
-			return createBarrierStraight(container);
+		if (path2HAB.equals(name)) {
+			return create2HAB(container);
         }
-        return createBarrierStraight(container);
+        return create2HAB(container);
 
 		
 		
 	}
 
-	public static Command createBarrierStraight(RobotContainer container) {
+	public static Command create2HAB(RobotContainer container) {
 		Drivetrain drivetrain = container.getDrivetrain();
 
-		PathPlannerTrajectory leg1Trajectory = PathPlanner.loadPath("Barrier Straight",
+		PathPlannerTrajectory leg1Trajectory = PathPlanner.loadPath("2HAB",
 				MAX_AUTO_VELOCITY_METERS_PER_SECOND,
 				MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
 
