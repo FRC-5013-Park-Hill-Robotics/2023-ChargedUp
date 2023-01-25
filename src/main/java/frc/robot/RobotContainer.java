@@ -111,6 +111,10 @@ public class RobotContainer {
 		return DriverStation.getAlliance() == Alliance.Red;
 	}
 
+	public Alliance getAlliance(){
+		return DriverStation.getAlliance();
+	}
+
 	public boolean isDisabled() {
 		return DriverStation.isDisabled();
 	}
