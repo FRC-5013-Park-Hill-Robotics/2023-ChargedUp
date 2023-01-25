@@ -6,6 +6,12 @@ package frc.robot.subsystems;
 
 import static frc.robot.constants.DrivetrainConstants.PIGEON_ID;
 import static frc.robot.constants.DrivetrainConstants.SWERVE_GEAR_RATIO;
+
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonPoseEstimator;
+
 import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 
 
@@ -180,6 +186,14 @@ public class Drivetrain extends SubsystemBase {
 		m_pose = m_PoseEstimator.update(Rotation2d.fromDegrees(m_pigeon.getYaw()),getModulePositions());
 		SmartDashboard.putNumber("Pose x", m_pose.getX());
 		SmartDashboard.putNumber("Pose y", m_pose.getY());
+	}
+
+	public void updatePoseEstimator(PhotonPoseEstimator photonEstimate){
+		Optional<EstimatedRobotPose>  pose = photonEstimate.update();
+		if (!pose.isEmpty()){
+			m_PoseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),pose.get().timestampSeconds);
+		}
+		
 	}
 
 	private void updateDriveStates(SwerveModuleState[] desiredStates) {
