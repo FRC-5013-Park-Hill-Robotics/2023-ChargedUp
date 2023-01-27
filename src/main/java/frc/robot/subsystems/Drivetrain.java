@@ -80,6 +80,50 @@ public class Drivetrain extends SubsystemBase {
 		config.setSteerCurrentLimit(40);
 		// Creating the SwerveModules using SDS factory method.
 		m_frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
+                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(0, 0),
+                Mk4iSwerveModuleHelper.GearRatio.L2,
+				FrontLeftSwerveConstants.DRIVE_MOTOR_ID.id,
+				FrontLeftSwerveConstants.STEER_MOTOR_ID.id,
+                FrontLeftSwerveConstants.ENCODER_ID.id,
+                // the canbus the module is on
+                FrontLeftSwerveConstants.DRIVE_MOTOR_ID.busName,
+                FrontLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
+		m_frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
+                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(0, 0),
+                Mk4iSwerveModuleHelper.GearRatio.L2,
+				FrontRightSwerveConstants.DRIVE_MOTOR_ID.id,
+				FrontRightSwerveConstants.STEER_MOTOR_ID.id,
+                FrontRightSwerveConstants.ENCODER_ID.id,
+                // the canbus the module is on
+                FrontRightSwerveConstants.DRIVE_MOTOR_ID.busName,
+                FrontRightSwerveConstants.ENCODER_OFFSET_RADIANS);
+		m_backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
+					tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+							.withSize(2, 4)
+							.withPosition(0, 0),
+					Mk4iSwerveModuleHelper.GearRatio.L2,
+					BackLeftSwerveConstants.DRIVE_MOTOR_ID.id,
+					BackLeftSwerveConstants.STEER_MOTOR_ID.id,
+					BackLeftSwerveConstants.ENCODER_ID.id,
+					// the canbus the module is on
+					BackLeftSwerveConstants.DRIVE_MOTOR_ID.busName,
+					BackLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
+		m_backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
+						tab.getLayout("Back  Right Module", BuiltInLayouts.kList)
+								.withSize(2, 4)
+								.withPosition(0, 0),
+						Mk4iSwerveModuleHelper.GearRatio.L2,
+						BackRightSwerveConstants.DRIVE_MOTOR_ID.id,
+						BackRightSwerveConstants.STEER_MOTOR_ID.id,
+						BackRightSwerveConstants.ENCODER_ID.id,
+						// the canbus the module is on
+						BackRightSwerveConstants.DRIVE_MOTOR_ID.busName,
+						BackRightSwerveConstants.ENCODER_OFFSET_RADIANS);
+		/*m_frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
 				tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
 				config,	SWERVE_GEAR_RATIO, FrontLeftSwerveConstants.DRIVE_MOTOR_ID, 
 				FrontLeftSwerveConstants.STEER_MOTOR_ID,
@@ -101,8 +145,9 @@ public class Drivetrain extends SubsystemBase {
 				tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
 				config,SWERVE_GEAR_RATIO, BackRightSwerveConstants.DRIVE_MOTOR_ID,
 				BackRightSwerveConstants.STEER_MOTOR_ID,
-				BackRightSwerveConstants.ENCODER_ID, BackRightSwerveConstants.ENCODER_OFFSET_RADIANS);
-
+				BackRightSwerveConstants.ENCODER_ID, BackRightSwerveConstants.ENCODER_OFFSET_RADIANS);*/
+		
+		zeroGyroscope();
 		m_PoseEstimator  = new SwerveDrivePoseEstimator(m_kinematics,
 		getYawR2d(),
 		new SwerveModulePosition[] {
@@ -114,7 +159,7 @@ public class Drivetrain extends SubsystemBase {
 		new Pose2d(),
 		VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
 		VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-		zeroGyroscope();
+
 	}
 
 	/**

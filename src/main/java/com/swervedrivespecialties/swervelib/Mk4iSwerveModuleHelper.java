@@ -1,21 +1,21 @@
 package com.swervedrivespecialties.swervelib;
 
 import com.swervedrivespecialties.swervelib.ctre.*;
-
+import com.swervedrivespecialties.swervelib.rev.*;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
 public final class Mk4iSwerveModuleHelper {
     private Mk4iSwerveModuleHelper() {
     }
 
-    private static DriveControllerFactory<?, CanPort> getFalcon500DriveFactory(Mk4ModuleConfiguration configuration) {
+    private static DriveControllerFactory<?, Integer> getFalcon500DriveFactory(Mk4ModuleConfiguration configuration) {
         return new Falcon500DriveControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withCurrentLimit(configuration.getDriveCurrentLimit())
                 .build();
     }
 
-    private static SteerControllerFactory<?, Falcon500SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(Mk4ModuleConfiguration configuration) {
+    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(Mk4ModuleConfiguration configuration) {
         return new Falcon500SteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withPidConstants(0.2, 0.0, 0.1)
@@ -24,6 +24,147 @@ public final class Mk4iSwerveModuleHelper {
                         .withReadingUpdatePeriod(100)
                         .build());
     }
+
+    private static DriveControllerFactory<?, Integer> getNeoDriveFactory(Mk4ModuleConfiguration configuration) {
+        return new NeoDriveControllerFactoryBuilder()
+                .withVoltageCompensation(configuration.getNominalVoltage())
+                .withCurrentLimit(configuration.getDriveCurrentLimit())
+                .build();
+    }
+
+    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getNeoSteerFactory(Mk4ModuleConfiguration configuration) {
+        return new NeoSteerControllerFactoryBuilder()
+                .withVoltageCompensation(configuration.getNominalVoltage())
+                .withPidConstants(1.0, 0.0, 0.1)
+                .withCurrentLimit(configuration.getSteerCurrentLimit())
+                .build(new CanCoderFactoryBuilder()
+                        .withReadingUpdatePeriod(100)
+                        .build());
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses Falcon 500s for driving and steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param canbus           The CAN Bus to to use (Assumes drive, steer, and encoder on same bus)
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500(
+            ShuffleboardLayout container,
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            String canbus,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getFalcon500DriveFactory(configuration),
+                getFalcon500SteerFactory(configuration)
+        ).create(
+                container,
+                driveMotorPort,
+                canbus,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset, canbus)
+                ),
+                canbus
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses Falcon 500s for driving and steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param canbus           The CAN Bus to to use (Assumes drive, steer, and encoder on same bus)
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500(
+            ShuffleboardLayout container,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            String canbus,
+            double steerOffset
+    ) {
+        return createFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, canbus, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses Falcon 500s for driving and steering.
+     *
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param canbus           The CAN Bus to to use (Assumes drive, steer, and encoder on same bus)
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500(
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            String canbus,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getFalcon500DriveFactory(configuration),
+                getFalcon500SteerFactory(configuration)
+        ).create(
+                driveMotorPort,
+                canbus,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset, canbus)
+                ),
+                canbus
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses Falcon 500s for driving and steering.
+     *
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param canbus           The CAN Bus to to use (Assumes drive, steer, and encoder on same bus)
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500(
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            String canbus,
+            double steerOffset
+    ) {
+        return createFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, canbus, steerOffset);
+    }
+
 
 
     /**
@@ -43,9 +184,9 @@ public final class Mk4iSwerveModuleHelper {
             ShuffleboardLayout container,
             Mk4ModuleConfiguration configuration,
             GearRatio gearRatio,
-            CanPort driveMotorPort,
-            CanPort steerMotorPort,
-            CanPort steerEncoderPort,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
             double steerOffset
     ) {
         return new SwerveModuleFactory<>(
@@ -55,7 +196,7 @@ public final class Mk4iSwerveModuleHelper {
         ).create(
                 container,
                 driveMotorPort,
-                new Falcon500SteerConfiguration<>(
+                new SteerConfiguration<>(
                         steerMotorPort,
                         new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
                 )
@@ -77,9 +218,9 @@ public final class Mk4iSwerveModuleHelper {
     public static SwerveModule createFalcon500(
             ShuffleboardLayout container,
             GearRatio gearRatio,
-            CanPort driveMotorPort,
-            CanPort steerMotorPort,
-            CanPort steerEncoderPort,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
             double steerOffset
     ) {
         return createFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
@@ -99,9 +240,9 @@ public final class Mk4iSwerveModuleHelper {
     public static SwerveModule createFalcon500(
             Mk4ModuleConfiguration configuration,
             GearRatio gearRatio,
-            CanPort driveMotorPort,
-            CanPort steerMotorPort,
-            CanPort steerEncoderPort,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
             double steerOffset
     ) {
         return new SwerveModuleFactory<>(
@@ -110,7 +251,7 @@ public final class Mk4iSwerveModuleHelper {
                 getFalcon500SteerFactory(configuration)
         ).create(
                 driveMotorPort,
-                new Falcon500SteerConfiguration<>(
+                new SteerConfiguration<>(
                         steerMotorPort,
                         new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
                 )
@@ -129,12 +270,345 @@ public final class Mk4iSwerveModuleHelper {
      */
     public static SwerveModule createFalcon500(
             GearRatio gearRatio,
-            CanPort driveMotorPort,
-            CanPort steerMotorPort,
-            CanPort steerEncoderPort,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
             double steerOffset
     ) {
         return createFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses NEOs for driving and steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeo(
+            ShuffleboardLayout container,
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getNeoDriveFactory(configuration),
+                getNeoSteerFactory(configuration)
+        ).create(
+                container,
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses NEOs for driving and steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeo(
+            ShuffleboardLayout container,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createNeo(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses NEOs for driving and steering.
+     *
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeo(
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getNeoDriveFactory(configuration),
+                getNeoSteerFactory(configuration)
+        ).create(
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses NEOs for driving and steering.
+     *
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeo(
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createNeo(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a Falcon 500 for driving and a NEO for steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500Neo(
+            ShuffleboardLayout container,
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getFalcon500DriveFactory(configuration),
+                getNeoSteerFactory(configuration)
+        ).create(
+                container,
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a Falcon 500 for driving and a NEO for steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500Neo(
+            ShuffleboardLayout container,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createFalcon500Neo(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a Falcon 500 for driving and a NEO for steering.
+     *
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500Neo(
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getFalcon500DriveFactory(configuration),
+                getNeoSteerFactory(configuration)
+        ).create(
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a Falcon 500 for driving and a NEO for steering.
+     *
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive Falcon 500.
+     * @param steerMotorPort   The CAN ID of the steer NEO.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createFalcon500Neo(
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createFalcon500Neo(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a NEO for driving and a Falcon 500 for steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeoFalcon500(
+            ShuffleboardLayout container,
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getNeoDriveFactory(configuration),
+                getFalcon500SteerFactory(configuration)
+        ).create(
+                container,
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a NEO for driving and a Falcon 500 for steering.
+     * Module information is displayed in the specified ShuffleBoard container.
+     *
+     * @param container        The container to display module information in.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeoFalcon500(
+            ShuffleboardLayout container,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createNeoFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a NEO for driving and a Falcon 500 for steering.
+     *
+     * @param configuration    Module configuration parameters to use.
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeoFalcon500(
+            Mk4ModuleConfiguration configuration,
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return new SwerveModuleFactory<>(
+                gearRatio.getConfiguration(),
+                getNeoDriveFactory(configuration),
+                getFalcon500SteerFactory(configuration)
+        ).create(
+                driveMotorPort,
+                new SteerConfiguration<>(
+                        steerMotorPort,
+                        new CanCoderAbsoluteConfiguration(steerEncoderPort, steerOffset)
+                )
+        );
+    }
+
+    /**
+     * Creates a Mk4i swerve module that uses a NEO for driving and a Falcon 500 for steering.
+     *
+     * @param gearRatio        The gearing configuration the module is in.
+     * @param driveMotorPort   The CAN ID of the drive NEO.
+     * @param steerMotorPort   The CAN ID of the steer Falcon 500.
+     * @param steerEncoderPort The CAN ID of the steer CANCoder.
+     * @param steerOffset      The offset of the CANCoder in radians.
+     * @return The configured swerve module.
+     */
+    public static SwerveModule createNeoFalcon500(
+            GearRatio gearRatio,
+            int driveMotorPort,
+            int steerMotorPort,
+            int steerEncoderPort,
+            double steerOffset
+    ) {
+        return createNeoFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     public enum GearRatio {
