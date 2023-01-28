@@ -18,12 +18,15 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 
 import frc.robot.RobotContainer;
-import frc.robot.constants.PhotonVisionConstants;
 import frc.robot.constants.PhotonVisionConstants.FrontCamera;
 import frc.robot.constants.PhotonVisionConstants.RearCamera;
+import edu.wpi.first.wpilibj.DriverStation;
+import static frc.robot.constants.PhotonVisionConstants.FrontCamera;
+import static frc.robot.constants.PhotonVisionConstants.RearCamera;
 
 
 
@@ -32,47 +35,49 @@ public class PhotonVision extends SubsystemBase{
     private PhotonCamera m_frontCamera = new PhotonCamera(FrontCamera.name);
     private PhotonCamera m_rearCamera = new PhotonCamera(RearCamera.name);
     private RobotContainer m_robotContainer;
-    private Alliance m_alliance;
 
-    ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
+    private ArrayList<Pair<PhotonCamera, Transform3d>> camList = new ArrayList<Pair<PhotonCamera, Transform3d>>();
 
-    AprilTagFieldLayout aprilTagFieldLayout;
-    PhotonPoseEstimator photonPoseEstimator;
+    private AprilTagFieldLayout aprilTagFieldLayout;
+    private PhotonPoseEstimator m_frontPoseEstimator;
+    private PhotonPoseEstimator m_rearPoseEstimator;
     private boolean isinitialized = false;
-
 
     public PhotonVision(){
         super();
-        camList.add(new Pair<PhotonCamera, Transform3d>(m_frontCamera, FrontCamera.robotToCam));
-        camList.add(new Pair<PhotonCamera, Transform3d>(m_rearCamera, RearCamera.robotToCam));
         try{
             aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFields.k2022RapidReact.m_resourceFile);
         } catch (IOException e){
             System.out.println(e.toString());
         }
-        
-        //Alliance alliance;
-        //if(alliance  != Alliance.Invalid){
-            //if (isinitialized){
-                //if(alliance == Alliance.Red){
-                    //aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-                //} else {
-                    //aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-                //}
-            //}
-        //}
 
     }
     
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-        photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-        return photonPoseEstimator.update();
+    @Override
+    public void periodic(){ 
+        if (!isinitialized){
+
+            Alliance alliance =  DriverStation.getAlliance();
+            if(alliance  != Alliance.Invalid){
+                isinitialized = true;
+                if(alliance == Alliance.Red){
+                    aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+                } else {
+                    aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+                } 
+
+                m_frontPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_frontCamera,FrontCamera.robotToCam );
+                m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_rearCamera,RearCamera.robotToCam );
+            }
+            if (m_frontPoseEstimator != null){
+                m_robotContainer.getDrivetrain().updatePoseEstimator(m_frontPoseEstimator);
+            }
+            if (m_rearPoseEstimator != null){
+                m_robotContainer.getDrivetrain().updatePoseEstimator(m_rearPoseEstimator);
+            }
+ 
+        }
     }
 
-    
-    //public Command updateDrivetrainPose(){
-        
-      //  m_robotContainer.getDrivetrain().updatePoseEstimator(photonPoseEstimator);
-    //}
 }
 

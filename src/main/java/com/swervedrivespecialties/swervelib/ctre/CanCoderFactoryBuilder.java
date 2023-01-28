@@ -32,6 +32,8 @@ public class CanCoderFactoryBuilder {
             config.initializationStrategy = configuration.getInitStrategy();
 
             WPI_CANCoder encoder = new WPI_CANCoder(configuration.getId(), configuration.getCanbus());
+            encoder.configAllSettings(config, 250);
+			encoder.setPositionToAbsolute();
             // CtreUtils.checkCtreError(encoder.configAllSettings(config, 250), "Failed to configure CANCoder");
             CtreUtils.checkCtreError(encoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, periodMilliseconds, 250), "Failed to configure CANCoder update rate");
 
@@ -40,7 +42,7 @@ public class CanCoderFactoryBuilder {
     }
 
     private static class EncoderImplementation implements AbsoluteEncoder {
-        private final int ATTEMPTS = 3; // TODO: Allow changing number of tries for getting correct position
+        private final int ATTEMPTS = 10; // TODO: Allow changing number of tries for getting correct position
 
         private final WPI_CANCoder encoder;
         private final double offsetRadians;
