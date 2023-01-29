@@ -20,8 +20,9 @@ public class AutonomousCommandFactory {
 	public static double MAX_AUTO_VELOCITY_METERS_PER_SECOND = DrivetrainGeometry.MAX_VELOCITY_METERS_PER_SECOND/2;
 	public static double MAX_AUTO_ANGULAR_RADIANS_PER_SECOND = DrivetrainGeometry.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/2;
 	public static String path2HAB = "2HAB";
+	public static String pathCurvy = "Curvy";
 
-	public static final String[] AUTOS = {path2HAB};
+	public static final String[] AUTOS = {path2HAB, pathCurvy};
 
 	public static Command createStartupCommand(RobotContainer container, PathPlannerTrajectory trajectory) {
 		Drivetrain drivetrain = container.getDrivetrain();
@@ -44,24 +45,37 @@ public class AutonomousCommandFactory {
 		return swerveControllerCommand;
 	}
 
-    public static Command createAutonomous(RobotContainer container) {
-		return create2HAB(container);
-	}
-
 	public static Command createAutonomous(RobotContainer container, String name) {
 		if (path2HAB.equals(name)) {
 			return create2HAB(container);
-        }
-        return create2HAB(container);
-
-		
-		
+		}
+		else {
+			return createCurvy(container);
+		}
 	}
+	
 
 	public static Command create2HAB(RobotContainer container) {
 		Drivetrain drivetrain = container.getDrivetrain();
 
 		PathPlannerTrajectory leg1Trajectory = PathPlanner.loadPath("2HAB",
+				MAX_AUTO_VELOCITY_METERS_PER_SECOND,
+				MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
+
+		Command leg1 = createSwerveControllerCommand(leg1Trajectory, drivetrain).raceWith(new TrajectoryLogging(leg1Trajectory, drivetrain::getPose));
+		Command startup = createStartupCommand(container, leg1Trajectory);
+		
+
+		return new SequentialCommandGroup(
+				startup,
+				leg1);
+	}
+
+
+	public static Command createCurvy(RobotContainer container) {
+		Drivetrain drivetrain = container.getDrivetrain();
+
+		PathPlannerTrajectory leg1Trajectory = PathPlanner.loadPath("Curvy",
 				MAX_AUTO_VELOCITY_METERS_PER_SECOND,
 				MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
 

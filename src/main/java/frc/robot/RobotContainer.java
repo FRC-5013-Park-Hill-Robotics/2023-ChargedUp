@@ -6,6 +6,12 @@ package frc.robot;
 
 import static frc.robot.constants.GlobalConstants.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
@@ -25,6 +31,9 @@ import frc.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.DrivetrainConstants.TranslationGains;
+import frc.robot.constants.DrivetrainConstants.ThetaGains;
 import edu.wpi.first.wpilibj2.command.button.Button;
 
 /**
@@ -36,25 +45,36 @@ import edu.wpi.first.wpilibj2.command.button.Button;
  */
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
+	public static RobotContainer instance;
+	private final Map<String, Command> eventMap = new HashMap<>();
 	private final Drivetrain m_drivetrainSubsystem = new Drivetrain();
+	private final SwerveAutoBuilder m_autoBuilder = new SwerveAutoBuilder(
+            m_drivetrainSubsystem::getPose, // Pose2d supplier
+            m_drivetrainSubsystem::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+            new PIDConstants(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+            new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD), // PID constants to correct for rotation error (used to create the rotation controller)
+            m_drivetrainSubsystem::drive, // Module states consumer used to output to the drive subsystem
+            eventMap,
+            true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+            m_drivetrainSubsystem // The drive subsystem. Used to properly set the requirements of path following commands
+        ); 
 	private final LogitechController m_controller = new LogitechController(ControllerConstants.DRIVER_CONTROLLER_PORT);
 	private final LogitechController m_operator_controller = new LogitechController(
 			ControllerConstants.OPERATOR_CONTROLLER_PORT);
-	//private final LogitechController m_programmer_controller = new LogitechController(
-	//		ControllerConstants.PROGRAMMER_CONTROLLER_PORT);
 
 	private PowerDistribution m_PowerDistribution = new PowerDistribution(PCM_ID, ModuleType.kRev);
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
-	//private StatusLED m_StatusLED = new StatusLED(this);
-	//private ShooterVision m_shooterVision = new ShooterVision();
-	
-	//private Intake m_intake = new Intake(m_conveyor, this);
+
+	public static RobotContainer getInstance(){
+		return instance;
+	}
 
 
 	/**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+		instance = this;
         // Set up the default command for the drivetrain.
         // The controls are for field-oriented driving:
         // Left stick Y axis -> forward and backwards movement
@@ -129,6 +149,10 @@ public class RobotContainer {
 
 	public Drivetrain getDrivetrain() {
 		return m_drivetrainSubsystem;
+	}
+
+	public static SwerveAutoBuilder getSwerveAutoBuilder() {
+		return getInstance().m_autoBuilder;
 	}
 
 	public LogitechController getcontroller() {

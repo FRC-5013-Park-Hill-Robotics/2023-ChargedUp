@@ -12,6 +12,9 @@ import static frc.robot.constants.CANConstants.*;
 
 /** Add your docs here. */
 public final class DrivetrainConstants {
+    public DrivetrainConstants(double kp, double ki, double kd) {
+    }
+
     public static final CanPort PIGEON_ID = new CanPort(14,CANIVORE_NAME);
     public static final GearRatio SWERVE_GEAR_RATIO = GearRatio.L2;
     /**
