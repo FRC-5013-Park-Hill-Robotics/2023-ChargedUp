@@ -179,6 +179,10 @@ public class Drivetrain extends SubsystemBase {
 		m_PoseEstimator = new SwerveDrivePoseEstimator(m_kinematics, getYawR2d(), getModulePositions(), m_pose);
 	}
 
+	public void resetPose(Pose2d newPosition) {
+		setInitialPosition(newPosition, newPosition.getRotation());
+	}
+
 	/*
 	 * Return the gyroscope's heading as a Rotation2d object
 	 */
