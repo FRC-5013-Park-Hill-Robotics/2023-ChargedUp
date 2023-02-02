@@ -37,5 +37,9 @@ public final class GlobalConstants {
         public static final int ROLLER_SERVO = 0;
     }
 
+    public static final class LEDConstants {
+        
+    }
+
 
 }
