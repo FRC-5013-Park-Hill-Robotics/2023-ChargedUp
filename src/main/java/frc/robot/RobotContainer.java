@@ -85,7 +85,7 @@ public class RobotContainer {
         configureButtonBindings();
 		m_pneumaticsHub.enableCompressorDigital();
 	
-		SmartDashboard.putStringArray("Auto List",AutonomousCommandFactory.AUTOS );
+		SmartDashboard.putStringArray("Auto List",PathPlannerCommandFactory.AUTOS );
 
 		LiveWindow.disableAllTelemetry();
     }
@@ -123,8 +123,8 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 	public Command getAutonomousCommand() {
-		String autoName = SmartDashboard.getString("Auto Selector", AutonomousCommandFactory.path2HAB);
-		return AutonomousCommandFactory.createAutonomous(this,autoName);
+		String autoName = SmartDashboard.getString("Auto Selector", PathPlannerCommandFactory.path2HAB);
+		return PathPlannerCommandFactory.createAutonomous(this,autoName);
 	}
 
 	public boolean isRedAlliance() {
@@ -153,6 +153,10 @@ public class RobotContainer {
 
 	public static SwerveAutoBuilder getSwerveAutoBuilder() {
 		return getInstance().m_autoBuilder;
+	}
+
+	public static Map<String, Command> getEventMap() {
+		return getInstance().eventMap;
 	}
 
 	public LogitechController getcontroller() {

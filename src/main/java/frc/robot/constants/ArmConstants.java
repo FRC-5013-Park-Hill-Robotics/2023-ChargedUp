@@ -21,4 +21,18 @@ public class ArmConstants {
         public static double kD = 0;
         public static double kF = 0;
     }
+
+    public static final class extensionSetpoints {
+        public static double lowNode = 0;
+        public static double midNode = 0;
+        public static double highNode = 0;
+
+
+    }
+
+    public static final class angleSetpoints {
+        public static double lowNode = 0;
+        public static double midNode = 0;
+        public static double highNode = 0;
+    }
 }
