@@ -21,7 +21,7 @@ import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 import frc.robot.trobot5013lib.led.TrobotAddressableLEDPattern;
 
 public class StatusLED extends SubsystemBase {
-	private TrobotAddressableLED m_led = new TrobotAddressableLED(LEDConstants.STATUS_LED_PWM_PORT, 60);
+	//private TrobotAddressableLED m_led = new TrobotAddressableLED(LEDConstants.STATUS_LED_PWM_PORT, 60);
 	private RobotContainer m_RobotContainer;
 	private TrobotAddressableLEDPattern m_bluePattern = new SolidColorPattern(Color.kBlue);
 	private TrobotAddressableLEDPattern m_redPattern = new SolidColorPattern(Color.kRed);
@@ -85,6 +85,7 @@ public class StatusLED extends SubsystemBase {
         } else {
 
         }
+}
 }
 
 
