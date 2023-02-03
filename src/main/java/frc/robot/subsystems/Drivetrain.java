@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import static frc.robot.constants.DrivetrainConstants.PIGEON_ID;
-import static frc.robot.constants.DrivetrainConstants.SWERVE_GEAR_RATIO;
 
 import java.util.Optional;
 
@@ -17,10 +16,6 @@ import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
-import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
-import com.swervedrivespecialties.swervelib.SwerveModule;
-
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,6 +26,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -38,34 +34,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import frc.robot.constants.DrivetrainConstants.BackLeftSwerveConstants;
-import frc.robot.constants.DrivetrainConstants.BackRightSwerveConstants;
-import frc.robot.constants.DrivetrainConstants.FrontLeftSwerveConstants;
-import frc.robot.constants.DrivetrainConstants.FrontRightSwerveConstants;
+import frc.robot.SwerveModule;
+import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
-import frc.robot.constants.DrivetrainConstants.DrivetrainGeometry;
+
 
 public class Drivetrain extends SubsystemBase {
 	private final WPI_Pigeon2 m_pigeon = new WPI_Pigeon2(PIGEON_ID.id,PIGEON_ID.busName);
 	private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 			// Front left
-			new Translation2d(DrivetrainGeometry.TRACKWIDTH_METERS / 2.0, DrivetrainGeometry.WHEELBASE_METERS / 2.0),
+			new Translation2d(DrivetrainConstants.trackWidth / 2.0, DrivetrainConstants.wheelBase/ 2.0),
 			// Front right
-			new Translation2d(DrivetrainGeometry.TRACKWIDTH_METERS / 2.0, -DrivetrainGeometry.WHEELBASE_METERS / 2.0),
+			new Translation2d(DrivetrainConstants.trackWidth / 2.0, -DrivetrainConstants.wheelBase / 2.0),
 			// Back left
-			new Translation2d(-DrivetrainGeometry.TRACKWIDTH_METERS / 2.0, DrivetrainGeometry.WHEELBASE_METERS / 2.0),
+			new Translation2d(-DrivetrainConstants.trackWidth / 2.0, DrivetrainConstants.wheelBase / 2.0),
 			// Back right
-			new Translation2d(-DrivetrainGeometry.TRACKWIDTH_METERS / 2.0, -DrivetrainGeometry.WHEELBASE_METERS / 2.0));
+			new Translation2d(-DrivetrainConstants.trackWidth / 2.0, -DrivetrainConstants.wheelBase / 2.0));
 
 	// FIX We need to figure out initial possition.
 	private Pose2d m_pose = new Pose2d();
 	private SwerveDrivePoseEstimator m_PoseEstimator ;
 
 	// These are our modules. We initialize them in the constructor.
-	private final SwerveModule m_frontLeftModule;
-	private final SwerveModule m_frontRightModule;
-	private final SwerveModule m_backLeftModule;
-	private final SwerveModule m_backRightModule;
+	public SwerveModule[] mSwerveMods;
 
 	private SwerveModuleState[] m_desiredStates;
 
@@ -73,89 +64,20 @@ public class Drivetrain extends SubsystemBase {
 			TranslationGains.kA);
 
 	public Drivetrain() {
-		ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-
-		Mk4ModuleConfiguration config = new Mk4ModuleConfiguration();
-		config.setDriveCurrentLimit(60);
-		config.setSteerCurrentLimit(40);
-		// Creating the SwerveModules using SDS factory method.
-		m_frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
-                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
-                Mk4iSwerveModuleHelper.GearRatio.L2,
-				FrontLeftSwerveConstants.DRIVE_MOTOR_ID.id,
-				FrontLeftSwerveConstants.STEER_MOTOR_ID.id,
-                FrontLeftSwerveConstants.ENCODER_ID.id,
-                // the canbus the module is on
-                FrontLeftSwerveConstants.DRIVE_MOTOR_ID.busName,
-                FrontLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
-		m_frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                        .withSize(2, 4)
-                        .withPosition(0, 0),
-                Mk4iSwerveModuleHelper.GearRatio.L2,
-				FrontRightSwerveConstants.DRIVE_MOTOR_ID.id,
-				FrontRightSwerveConstants.STEER_MOTOR_ID.id,
-                FrontRightSwerveConstants.ENCODER_ID.id,
-                // the canbus the module is on
-                FrontRightSwerveConstants.DRIVE_MOTOR_ID.busName,
-                FrontRightSwerveConstants.ENCODER_OFFSET_RADIANS);
-		m_backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
-					tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-							.withSize(2, 4)
-							.withPosition(0, 0),
-					Mk4iSwerveModuleHelper.GearRatio.L2,
-					BackLeftSwerveConstants.DRIVE_MOTOR_ID.id,
-					BackLeftSwerveConstants.STEER_MOTOR_ID.id,
-					BackLeftSwerveConstants.ENCODER_ID.id,
-					// the canbus the module is on
-					BackLeftSwerveConstants.DRIVE_MOTOR_ID.busName,
-					BackLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
-		m_backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-						tab.getLayout("Back  Right Module", BuiltInLayouts.kList)
-								.withSize(2, 4)
-								.withPosition(0, 0),
-						Mk4iSwerveModuleHelper.GearRatio.L2,
-						BackRightSwerveConstants.DRIVE_MOTOR_ID.id,
-						BackRightSwerveConstants.STEER_MOTOR_ID.id,
-						BackRightSwerveConstants.ENCODER_ID.id,
-						// the canbus the module is on
-						BackRightSwerveConstants.DRIVE_MOTOR_ID.busName,
-						BackRightSwerveConstants.ENCODER_OFFSET_RADIANS);
-		/*m_frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
-				tab.getLayout("Front Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(0, 0),
-				config,	SWERVE_GEAR_RATIO, FrontLeftSwerveConstants.DRIVE_MOTOR_ID, 
-				FrontLeftSwerveConstants.STEER_MOTOR_ID,
-				FrontLeftSwerveConstants.ENCODER_ID, FrontLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
-
-		m_frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-				tab.getLayout("Front Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(2, 0),
-				config,SWERVE_GEAR_RATIO, FrontRightSwerveConstants.DRIVE_MOTOR_ID,
-				FrontRightSwerveConstants.STEER_MOTOR_ID,
-				FrontRightSwerveConstants.ENCODER_ID, FrontRightSwerveConstants.ENCODER_OFFSET_RADIANS);
-
-		m_backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
-				tab.getLayout("Back Left Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(4, 0),
-				config,SWERVE_GEAR_RATIO, BackLeftSwerveConstants.DRIVE_MOTOR_ID,
-				BackLeftSwerveConstants.STEER_MOTOR_ID,
-				BackLeftSwerveConstants.ENCODER_ID, BackLeftSwerveConstants.ENCODER_OFFSET_RADIANS);
-
-		m_backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
-				tab.getLayout("Back Right Module", BuiltInLayouts.kList).withSize(2, 4).withPosition(6, 0),
-				config,SWERVE_GEAR_RATIO, BackRightSwerveConstants.DRIVE_MOTOR_ID,
-				BackRightSwerveConstants.STEER_MOTOR_ID,
-				BackRightSwerveConstants.ENCODER_ID, BackRightSwerveConstants.ENCODER_OFFSET_RADIANS);*/
-		
+			
 		zeroGyroscope();
+		mSwerveMods = new SwerveModule[] {
+            new SwerveModule(0, DrivetrainConstants.Mod0.constants),
+            new SwerveModule(1, DrivetrainConstants.Mod1.constants),
+            new SwerveModule(2, DrivetrainConstants.Mod2.constants),
+            new SwerveModule(3, DrivetrainConstants.Mod3.constants)
+        };
+		Timer.delay(1.0);
+        resetModulesToAbsolute();
+
 		m_PoseEstimator  = new SwerveDrivePoseEstimator(m_kinematics,
 		getYawR2d(),
-		new SwerveModulePosition[] {
-			m_frontLeftModule.getPosition(),
-			m_frontRightModule.getPosition(),
-			m_backLeftModule.getPosition(),
-			m_backRightModule.getPosition()
-		},
+		getModulePositions(),
 		new Pose2d(),
 		VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
 		VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
@@ -206,6 +128,7 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
+		System.out.println("Drive called");
 		if (m_desiredStates != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0
 				&& chassisSpeeds.omegaRadiansPerSecond == 0) {
 			m_desiredStates[0].speedMetersPerSecond = 0;
@@ -215,21 +138,31 @@ public class Drivetrain extends SubsystemBase {
 		} else {
 			m_desiredStates = m_kinematics.toSwerveModuleStates(chassisSpeeds);
 		}
-		setDesiredStates(m_desiredStates);
+		setDesiredStates(m_desiredStates,true);
+	}
+
+	public void setDesiredStates(SwerveModuleState[] newStates, boolean isOpenLoop) {
+		for(SwerveModule mod : mSwerveMods){
+			System.out.println("Speed["+ mod.moduleNumber + "]" + newStates[mod.moduleNumber].speedMetersPerSecond);
+            mod.setDesiredState(newStates[mod.moduleNumber], isOpenLoop);
+        }
 	}
 
 	public void setDesiredStates(SwerveModuleState[] newStates) {
-		m_desiredStates = newStates;
-		updatePoseEstimator();
-		updateDriveStates(m_desiredStates);
+		setDesiredStates(newStates,true);
 	}
 
 	@Override
-	public void periodic() {
-		updatePoseEstimator();
+    public void periodic(){
+        updatePoseEstimator(); 
 		SmartDashboard.putNumber("Gyro", getYawR2d().getDegrees());
 		SmartDashboard.putNumber("pitch", getPitchR2d().getDegrees());
-	}
+        for(SwerveModule mod : mSwerveMods){
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Cancoder", mod.getCanCoder().getDegrees());
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Integrated", mod.getPosition().angle.getDegrees());
+            SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);    
+        }
+    }
 
 	private void updatePoseEstimator() {
 		m_pose = m_PoseEstimator.update(Rotation2d.fromDegrees(m_pigeon.getYaw()),getModulePositions());
@@ -243,27 +176,6 @@ public class Drivetrain extends SubsystemBase {
 			m_PoseEstimator.addVisionMeasurement(pose.get().estimatedPose.toPose2d(),pose.get().timestampSeconds);
 		}
 		
-	}
-
-	private void updateDriveStates(SwerveModuleState[] desiredStates) {
-		if (desiredStates != null) {
-			SwerveModuleState frontLeftState = desiredStates[FrontLeftSwerveConstants.STATES_INDEX];
-			SwerveModuleState frontRightState = desiredStates[FrontRightSwerveConstants.STATES_INDEX];
-			SwerveModuleState backLeftState = desiredStates[BackLeftSwerveConstants.STATES_INDEX];
-			SwerveModuleState backRightState = desiredStates[BackRightSwerveConstants.STATES_INDEX];
-
-			SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
-					DrivetrainGeometry.MAX_VELOCITY_METERS_PER_SECOND);
-
-			m_frontLeftModule.set(velocityToDriveVolts(frontLeftState.speedMetersPerSecond),
-					frontLeftState.angle.getRadians());
-			m_frontRightModule.set(velocityToDriveVolts(frontRightState.speedMetersPerSecond),
-					frontRightState.angle.getRadians());
-			m_backLeftModule.set(velocityToDriveVolts(backLeftState.speedMetersPerSecond),
-					backLeftState.angle.getRadians());
-			m_backRightModule.set(velocityToDriveVolts(backRightState.speedMetersPerSecond),
-					backRightState.angle.getRadians());
-		}
 	}
 
 	private double velocityToDriveVolts(double speedMetersPerSecond) {
@@ -280,30 +192,46 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public static double percentOutputToMetersPerSecond(double percentOutput) {
-		return DrivetrainGeometry.MAX_VELOCITY_METERS_PER_SECOND * percentOutput;
+		return DrivetrainConstants.maxSpeed  * percentOutput;
 	}
 
 	public static double percentOutputToRadiansPerSecond(double percentOutput) {
-		return DrivetrainGeometry.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * percentOutput;
+		return DrivetrainConstants.maxAngularVelocity * percentOutput;
 	}
 
-	public SwerveModulePosition[] getModulePositions(){
-		return new SwerveModulePosition[]{ m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(), m_backLeftModule.getPosition(), m_backRightModule.getPosition() };
-	}
+    public SwerveModulePosition[] getModulePositions(){
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+        for(SwerveModule mod : mSwerveMods){
+            positions[mod.moduleNumber] = mod.getPosition();
+        }
+        return positions;
+    }
 
 	public void setX() {
-		m_desiredStates[FrontLeftSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
-		m_desiredStates[FrontRightSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
-		m_desiredStates[BackLeftSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
-		m_desiredStates[BackRightSwerveConstants.STATES_INDEX].speedMetersPerSecond = 0;
+		m_desiredStates[0].speedMetersPerSecond = 0;
+		m_desiredStates[1].speedMetersPerSecond = 0;
+		m_desiredStates[2].speedMetersPerSecond = 0;
+		m_desiredStates[3].speedMetersPerSecond = 0;
 
-		m_desiredStates[FrontLeftSwerveConstants.STATES_INDEX].angle = Rotation2d.fromDegrees(45);
-		m_desiredStates[FrontRightSwerveConstants.STATES_INDEX].angle = Rotation2d.fromDegrees(135);
-		m_desiredStates[BackLeftSwerveConstants.STATES_INDEX].angle = Rotation2d.fromDegrees(225);
-		m_desiredStates[BackRightSwerveConstants.STATES_INDEX].angle = Rotation2d.fromDegrees(315);
+		m_desiredStates[0].angle = Rotation2d.fromDegrees(45);
+		m_desiredStates[1].angle = Rotation2d.fromDegrees(135);
+		m_desiredStates[2].angle = Rotation2d.fromDegrees(225);
+		m_desiredStates[3].angle = Rotation2d.fromDegrees(315);
 
-		setDesiredStates(m_desiredStates);
+		setDesiredStates(m_desiredStates,true);
 
 	}
-
+    public void resetModulesToAbsolute(){
+        for(SwerveModule mod : mSwerveMods){
+            mod.resetToAbsolute();
+        }
+    }
+	public SwerveModuleState[] getModuleStates(){
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for(SwerveModule mod : mSwerveMods){
+            states[mod.moduleNumber] = mod.getState();
+        }
+        return states;
+    }
+	
 }

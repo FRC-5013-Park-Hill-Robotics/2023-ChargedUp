@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.AbsoluteEncoder;
-import com.swervedrivespecialties.swervelib.ctre.Falcon500DriveControllerFactoryBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;

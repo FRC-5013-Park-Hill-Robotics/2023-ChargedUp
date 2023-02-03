@@ -9,16 +9,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.constants.DrivetrainConstants;
 //import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.constants.DrivetrainConstants.DrivetrainGeometry;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.trobot5013lib.command.TrajectoryLogging;
 
 public class AutonomousCommandFactory {
-	public static double MAX_AUTO_VELOCITY_METERS_PER_SECOND = DrivetrainGeometry.MAX_VELOCITY_METERS_PER_SECOND/2;
-	public static double MAX_AUTO_ANGULAR_RADIANS_PER_SECOND = DrivetrainGeometry.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND/2;
+	public static double MAX_AUTO_VELOCITY_METERS_PER_SECOND = DrivetrainConstants.maxSpeed/2;
+	public static double MAX_AUTO_ANGULAR_RADIANS_PER_SECOND = DrivetrainConstants.maxAngularVelocity/2;
 	public static String path2HAB = "2HAB";
 	public static String pathCurvy = "Curvy";
 
