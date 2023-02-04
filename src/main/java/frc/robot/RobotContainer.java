@@ -53,7 +53,7 @@ public class RobotContainer {
             m_drivetrainSubsystem::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
             new PIDConstants(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD), // PID constants to correct for translation error (used to create the X and Y PID controllers)
             new PIDConstants(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD), // PID constants to correct for rotation error (used to create the rotation controller)
-            m_drivetrainSubsystem::drive, // Module states consumer used to output to the drive subsystem
+            m_drivetrainSubsystem::driveClosedLoop, // Module states consumer used to output to the drive subsystem
             eventMap,
             true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
             m_drivetrainSubsystem // The drive subsystem. Used to properly set the requirements of path following commands

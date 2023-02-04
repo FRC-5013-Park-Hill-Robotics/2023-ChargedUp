@@ -42,6 +42,7 @@ public class SwerveModule {
         mDriveMotor = new TalonFX(moduleConstants.driveMotorID.id,moduleConstants.driveMotorID.busName);
         configDriveMotor();
 
+        getState().angle.getDegrees();
         lastAngle = getState().angle;
     }
 
@@ -65,7 +66,6 @@ public class SwerveModule {
 
     private void setAngle(SwerveModuleState desiredState){
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (DrivetrainConstants.maxSpeed * 0.01)) ? lastAngle : desiredState.angle; //Prevent rotating module if speed is less then 1%. Prevents Jittering.
-        
         mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(angle.getDegrees(), DrivetrainConstants.angleGearRatio));
         lastAngle = angle;
     }

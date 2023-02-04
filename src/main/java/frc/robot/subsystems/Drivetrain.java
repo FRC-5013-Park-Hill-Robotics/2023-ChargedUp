@@ -128,7 +128,6 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void drive(ChassisSpeeds chassisSpeeds) {
-		System.out.println("Drive called");
 		if (m_desiredStates != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0
 				&& chassisSpeeds.omegaRadiansPerSecond == 0) {
 			m_desiredStates[0].speedMetersPerSecond = 0;
@@ -140,16 +139,27 @@ public class Drivetrain extends SubsystemBase {
 		}
 		setDesiredStates(m_desiredStates,true);
 	}
+	public void driveClosedLoop(ChassisSpeeds chassisSpeeds) {
+		if (m_desiredStates != null && chassisSpeeds.vxMetersPerSecond == 0 && chassisSpeeds.vyMetersPerSecond == 0
+				&& chassisSpeeds.omegaRadiansPerSecond == 0) {
+			m_desiredStates[0].speedMetersPerSecond = 0;
+			m_desiredStates[1].speedMetersPerSecond = 0;
+			m_desiredStates[2].speedMetersPerSecond = 0;
+			m_desiredStates[3].speedMetersPerSecond = 0;
+		} else {
+			m_desiredStates = m_kinematics.toSwerveModuleStates(chassisSpeeds);
+		}
+		setDesiredStates(m_desiredStates,false);
+	}
 
 	public void setDesiredStates(SwerveModuleState[] newStates, boolean isOpenLoop) {
 		for(SwerveModule mod : mSwerveMods){
-			System.out.println("Speed["+ mod.moduleNumber + "]" + newStates[mod.moduleNumber].speedMetersPerSecond);
-            mod.setDesiredState(newStates[mod.moduleNumber], isOpenLoop);
+	          mod.setDesiredState(newStates[mod.moduleNumber], isOpenLoop);
         }
 	}
 
 	public void setDesiredStates(SwerveModuleState[] newStates) {
-		setDesiredStates(newStates,true);
+		setDesiredStates(newStates,false);
 	}
 
 	@Override
