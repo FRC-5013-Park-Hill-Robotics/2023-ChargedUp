@@ -38,7 +38,7 @@ public final class GlobalConstants {
     }
 
     public static final class LEDConstants {
-        
+        public static int STATUS_LED_PWM_PORT = 0;
     }
 
 
