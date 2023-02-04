@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.LimeLightConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -46,6 +47,17 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("LimelightArea", area);
 
   }
+
+  public double getHorazontalAngleOfError(){
+    //+1 is a fudge factor cor camera mounting
+    return getTx().getDouble(0.0) + LimeLightConstants.HORAZONTAL_OFFSET;
+  }
+
+  public double getVerticalAngleOfError(){
+    //+1 is a fudge factor cor camera mounting
+    return getTy().getDouble(0.0) + LimeLightConstants.VERTICAL_OFFSET;
+  }
+
 
  public NetworkTableEntry getTx() {
     return tx;
