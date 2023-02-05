@@ -173,7 +173,7 @@ public class RobotContainer {
 
 	public PhotonVision getPhotonVision(){
 		return m_photonVision;
-
+	}
 	public static double voltageToPercentOutput(double voltage) {
 		return MathUtil.clamp(voltage/Math.min(12, getPowerDistributionInstance().getVoltage()), -1, 1);
 	}
@@ -186,5 +186,6 @@ public class RobotContainer {
 	public PneumaticsControlModule getPneumaticsHub() {
 		return this.m_pneumaticsHub;
 	}
+	*/
 }
 
