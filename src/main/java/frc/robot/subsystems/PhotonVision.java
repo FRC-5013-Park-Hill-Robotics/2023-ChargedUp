@@ -53,29 +53,30 @@ public class PhotonVision extends SubsystemBase{
 
     }
     
+    public void initialize(){
+        Alliance alliance =  DriverStation.getAlliance();
+        if(alliance  != Alliance.Invalid){
+            isinitialized = true;
+            if(alliance == Alliance.Red){
+                aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+            } else {
+                aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+            } 
+
+            m_frontPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_frontCamera,FrontCamera.robotToCam );
+            m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_rearCamera,RearCamera.robotToCam );
+        }
+    }
+    
     @Override
     public void periodic(){ 
-        if (!isinitialized){
-
-            Alliance alliance =  DriverStation.getAlliance();
-            if(alliance  != Alliance.Invalid){
-                isinitialized = true;
-                if(alliance == Alliance.Red){
-                    aprilTagFieldLayout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-                } else {
-                    aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-                } 
-
-                m_frontPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_frontCamera,FrontCamera.robotToCam );
-                m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_rearCamera,RearCamera.robotToCam );
-            }
+        if (isinitialized){
             if (m_frontPoseEstimator != null){
                 m_robotContainer.getDrivetrain().updatePoseEstimator(m_frontPoseEstimator);
             }
             if (m_rearPoseEstimator != null){
                 m_robotContainer.getDrivetrain().updatePoseEstimator(m_rearPoseEstimator);
             }
- 
         }
     }
 
