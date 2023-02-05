@@ -57,18 +57,15 @@ public class StatusLED extends SubsystemBase {
         return isSeekingCone;
     }
 
-
     public void setSeekingCone(boolean isSeekingCone) {
         this.isSeekingCone = isSeekingCone;
     }
-
 
     /** Creates a new StatusLED. */
 	public StatusLED(RobotContainer robotContainer) {
 		super();
 		m_RobotContainer = robotContainer;
 	}
-
 
 	@Override
 	public void periodic() {
