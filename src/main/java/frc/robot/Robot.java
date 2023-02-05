@@ -7,7 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.PathPlannerCommandFactory;
+import frc.robot.subsystems.PhotonVision;
 
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
@@ -38,6 +38,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    PhotonVision pv = m_robotContainer.getPhotonVision();
+    if (pv!= null){
+      pv.initialize();
+    }
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -55,6 +59,10 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    PhotonVision pv = m_robotContainer.getPhotonVision();
+    if (pv!= null){
+      pv.initialize();
     }
   }
 

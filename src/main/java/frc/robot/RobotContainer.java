@@ -20,21 +20,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import frc.robot.commands.GamepadDrive;
-
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PhotonVision;
 
-//import frc.robot.subsystems.ShooterVision;
-//import frc.robot.subsystems.StatusLED;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
-import edu.wpi.first.wpilibj2.command.button.Button;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -64,7 +58,7 @@ public class RobotContainer {
 
 	private PowerDistribution m_PowerDistribution = new PowerDistribution(PCM_ID, ModuleType.kRev);
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
-
+	private PhotonVision m_photonVision;// = new PhotonVision();
 	public static RobotContainer getInstance(){
 		return instance;
 	}
@@ -171,23 +165,9 @@ public class RobotContainer {
 		this.m_PowerDistribution = m_PowerDistribution;
 	}
 
-/*
-	public StatusLED getStatusLED() {
-		return m_StatusLED;
+	public PhotonVision getPhotonVision(){
+		return m_photonVision;
 	}
-
-	public void setStatusLED(StatusLED m_StatusLED) {
-		this.m_StatusLED = m_StatusLED;
-	}
-*/
-	//public Intake getintake() {
-		//return m_intake;
-	//}
-
-	//public void setintake(Intake m_intake) {
-		//this.m_intake = m_intake;
-	//}
-
 	public PneumaticsControlModule getPneumaticsHub() {
 		return this.m_pneumaticsHub;
 	}
