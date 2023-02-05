@@ -9,9 +9,11 @@ import static frc.robot.constants.GlobalConstants.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
@@ -161,12 +163,25 @@ public class RobotContainer {
 		return m_PowerDistribution;
 	}
 
+	public static PowerDistribution getPowerDistributionInstance() {
+		return getInstance().m_PowerDistribution;
+	}
+
 	public void setPowerDistribution(PowerDistribution m_PowerDistribution) {
 		this.m_PowerDistribution = m_PowerDistribution;
 	}
 
 	public PhotonVision getPhotonVision(){
 		return m_photonVision;
+
+	public static double voltageToPercentOutput(double voltage) {
+		return MathUtil.clamp(voltage/Math.min(12, getPowerDistributionInstance().getVoltage()), -1, 1);
+	}
+
+
+/*
+	public StatusLED getStatusLED() {
+		return m_StatusLED;
 	}
 	public PneumaticsControlModule getPneumaticsHub() {
 		return this.m_pneumaticsHub;

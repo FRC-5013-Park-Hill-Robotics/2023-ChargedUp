@@ -4,6 +4,8 @@
 
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
@@ -35,6 +37,14 @@ public final class GlobalConstants {
         public static final int RAISE_INTAKE_SOLENOID_CHANNEL = 0;
 		public static final double INTAKE_SPEED = 0.5;
         public static final int ROLLER_SERVO = 0;
+
+        public static final Rotation2d INTAKE_ANGLE_DEGREES = Rotation2d.fromDegrees(0);
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kV = 0;
     }
 
     public static final class LEDConstants {
