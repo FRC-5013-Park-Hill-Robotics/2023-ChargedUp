@@ -67,7 +67,7 @@ public class PhotonVision extends SubsystemBase{
             m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_rearCamera,RearCamera.robotToCam );
         }
     }
-    
+
     @Override
     public void periodic(){ 
         if (isinitialized){
@@ -77,6 +77,8 @@ public class PhotonVision extends SubsystemBase{
             if (m_rearPoseEstimator != null){
                 m_robotContainer.getDrivetrain().updatePoseEstimator(m_rearPoseEstimator);
             }
+        } else {
+            initialize();
         }
     }
 
