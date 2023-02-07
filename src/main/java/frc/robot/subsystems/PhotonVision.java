@@ -77,9 +77,7 @@ public class PhotonVision extends SubsystemBase{
             if (m_rearPoseEstimator != null){
                 m_robotContainer.getDrivetrain().updatePoseEstimator(m_rearPoseEstimator);
             }
-        } else {
-            initialize();
-        }
+        } 
     }
 
 }
