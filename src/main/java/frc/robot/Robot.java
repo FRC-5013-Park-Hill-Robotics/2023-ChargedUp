@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.PhotonVision;
@@ -12,6 +14,7 @@ import frc.robot.subsystems.PhotonVision;
 public class Robot extends TimedRobot {
   public static CTREConfigs ctreConfigs;
   private Command m_autonomousCommand;
+  private Alliance m_alliance = Alliance.Invalid;
 
   private RobotContainer m_robotContainer;
 
@@ -27,6 +30,16 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
+  private void checkUpdateAlliance(){
+    
+    Alliance alliance =  DriverStation.getAlliance();
+      if(DriverStation.isDSAttached() && alliance  != Alliance.Invalid && alliance != m_alliance){
+        PhotonVision pv = m_robotContainer.getPhotonVision();
+        if (pv!= null){
+          pv.initialize();
+        }
+      }
+  }
   @Override
   public void disabledInit() {}
 
@@ -38,10 +51,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    PhotonVision pv = m_robotContainer.getPhotonVision();
-    if (pv!= null){
-      pv.initialize();
-    }
+    checkUpdateAlliance();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -60,14 +70,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    PhotonVision pv = m_robotContainer.getPhotonVision();
-    if (pv!= null){
-      pv.initialize();
-    }
+    checkUpdateAlliance();
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    checkUpdateAlliance();
+  }
 
   @Override
   public void teleopExit() {}

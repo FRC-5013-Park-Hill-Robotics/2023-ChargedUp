@@ -126,6 +126,9 @@ public class LogitechController extends GenericHID {
         return getRawAxis(Axis.kLeftX.value);
     }
 
+    public boolean isLeftXActive(double deadband) {
+        return Math.abs(getLeftX()) >= deadband;
+    }
     /**
      * Get the X axis value of right side of the controller.
      *
@@ -135,6 +138,9 @@ public class LogitechController extends GenericHID {
         return getRawAxis(Axis.kRightX.value);
     }
 
+    public boolean isRightXActive(double deadband) {
+        return Math.abs(getRightX()) >=  deadband;
+    }
     /**
      * Get the Y axis value of left side of the controller.
      *
@@ -142,6 +148,10 @@ public class LogitechController extends GenericHID {
      */
     public double getLeftY() {
         return getRawAxis(Axis.kLeftY.value);
+    }
+
+    public boolean isLeftYActive(double deadband) {
+        return Math.abs(getLeftY()) >=  deadband;
     }
 
     /**
@@ -152,7 +162,9 @@ public class LogitechController extends GenericHID {
     public double getRightY() {
         return getRawAxis(Axis.kRightY.value);
     }
-
+    public boolean isRightYActive(double deadband) {
+        return Math.abs(getRightY()) >= deadband;
+    }
     /**
      * Get the left trigger (LT) axis value of the controller. Note that this axis
      * is bound to the
