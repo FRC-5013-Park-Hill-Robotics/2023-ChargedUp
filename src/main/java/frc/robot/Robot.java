@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   private void checkUpdateAlliance(){
     
     Alliance alliance =  DriverStation.getAlliance();
-      if(alliance  != Alliance.Invalid && alliance != m_alliance){
+      if(DriverStation.isDSAttached() && alliance  != Alliance.Invalid && alliance != m_alliance){
         PhotonVision pv = m_robotContainer.getPhotonVision();
         if (pv!= null){
           pv.initialize();
