@@ -91,9 +91,12 @@ public class GamepadDrive extends CommandBase {
 
 		return value;
 	}
+	
 	private double calculateTranslationDirection(double x, double y) {
 		// Calculate the angle.
 		// Swapping x/y
 		return Math.atan2(x, y) + Math.PI / 2;
 	}
+
+	
 }

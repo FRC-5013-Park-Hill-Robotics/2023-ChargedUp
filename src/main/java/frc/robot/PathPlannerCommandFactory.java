@@ -36,9 +36,13 @@ import frc.robot.Robot;
 /** Add your docs here. */
 public class PathPlannerCommandFactory {
     public static PathPlannerTrajectory trajectory2HAB;
+    public static PathPlannerTrajectory trajectoryKittyWhipper;
     //public static List<PathPlannerTrajectory> trajectory?; 
     public static void init() {
         trajectory2HAB = PathPlanner.loadPath("2HAB",
+		MAX_AUTO_VELOCITY_METERS_PER_SECOND,
+		MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
+        trajectoryKittyWhipper = PathPlanner.loadPath("KittyWhipper",
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND,
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
         //trajectory? = PathPlanner.loadPathGroup("?", MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33 )
@@ -48,13 +52,17 @@ public class PathPlannerCommandFactory {
 	public static double MAX_AUTO_ANGULAR_RADIANS_PER_SECOND = DrivetrainConstants.maxAngularVelocity/2;
 	public static String path2HAB = "2HAB";
 	public static String pathCurvy = "Curvy";
+    public static String pathKittyWhipper = "KittyWhipper";
 
-	public static final String[] AUTOS = {path2HAB, pathCurvy};
+	public static final String[] AUTOS = {path2HAB, pathCurvy, pathKittyWhipper};
 
     public static Command createAutonomous(RobotContainer container, String name) {
 		if (path2HAB.equals(name)) {
 			return create2HAB(container);
 		}
+        else if (pathKittyWhipper.equals(name)) {
+            return createKittyWhipper(container);
+        }
 		else {
 			return create2HAB(container);
 		}
@@ -63,6 +71,15 @@ public class PathPlannerCommandFactory {
 
     public static Command create2HAB(RobotContainer container) {
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("2HAB", new PathConstraints(3, 4));
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+        //eventMap.put("intakeDown", new IntakeDown());
+        Command fullAuto = RobotContainer.getSwerveAutoBuilder().fullAuto(pathGroup);
+        return fullAuto;
+    }
+
+    public static Command createKittyWhipper(RobotContainer container) {
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("KittyWhipper", new PathConstraints(3, 4));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());

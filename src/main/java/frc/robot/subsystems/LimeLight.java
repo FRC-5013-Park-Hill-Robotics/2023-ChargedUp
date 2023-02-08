@@ -50,7 +50,7 @@ public class LimeLight extends SubsystemBase {
 
   public double getHorazontalAngleOfError(){
     //+1 is a fudge factor cor camera mounting
-    return getTx().getDouble(0.0) + LimeLightConstants.HORAZONTAL_OFFSET;
+    return getTx().getDouble(0.0) + LimeLightConstants.HORIZONTAL_OFFSET;
   }
 
   public double getVerticalAngleOfError(){
