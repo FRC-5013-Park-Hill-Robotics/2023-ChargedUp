@@ -22,12 +22,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArmControl;
 import frc.robot.commands.GamepadDrive;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.PhotonVision;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
 
@@ -44,6 +47,7 @@ public class RobotContainer {
 	public static RobotContainer instance;
 	private final Map<String, Command> eventMap = new HashMap<>();
 	private final Drivetrain m_drivetrainSubsystem = new Drivetrain();
+	private final Arm m_arm = new Arm();
 	private final SwerveAutoBuilder m_autoBuilder = new SwerveAutoBuilder(
             m_drivetrainSubsystem::getPose, // Pose2d supplier
             m_drivetrainSubsystem::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
@@ -77,6 +81,8 @@ public class RobotContainer {
         // Left stick X axis -> left and right movement
         // Right stick X axis -> rotation
         m_drivetrainSubsystem.setDefaultCommand(new GamepadDrive(m_drivetrainSubsystem, m_controller));
+		m_arm.setDefaultCommand(new ArmControl(m_arm, m_operator_controller));
+		
 		// Configure the button bindings
         configureButtonBindings();
 		m_pneumaticsHub.enableCompressorDigital();
@@ -96,20 +102,20 @@ public class RobotContainer {
 		// Back button zeros the gyroscope
 
 		
-		//new Button(m_operator_controller::getXButton).whenHeld(new AutoClimber(m_Climber, m_drivetrainSubsystem.getPitchR2d()::getDegrees));
+		//new Trigger(m_operator_controller::getXButton).whenHeld(new AutoClimber(m_Climber, m_drivetrainSubsystem.getPitchR2d()::getDegrees));
 		//new Button(m_operator_controller::getBButton).whenPressed(new PreClimbCommand(this));
 		// programmer controls
-		/*	new Button(m_programmer_controller::getBButton).whileHeld(new InstantCommand(m_shooter::fire))
-				.whenReleased(new InstantCommand(m_shooter::stopFiring));
-		new Button(m_programmer_controller::getYButton).whileHeld(new InstantCommand(m_conveyor::start));
-		new Button(m_programmer_controller::getXButton).whileHeld(new InstantCommand(m_intake::start));// .whenReleased(new
+		//new Button(m_programmer_controller::getBButton).whileHeld(new InstantCommand(m_shooter::fire))
+				//.whenReleased(new InstantCommand(m_shooter::stopFiring));
+		//new Button(m_programmer_controller::getYButton).whileHeld(new InstantCommand(m_conveyor::start));
+		//new Button(m_programmer_controller::getXButton).whileHeld(new InstantCommand(m_intake::start));// .whenReleased(new
 																									// InstantCommand(m_intake::stop));
-		new Button(m_programmer_controller::getDPadRight)
-				.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(100)));
-		new Button(m_programmer_controller::getDPadLeft)
-				.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(-100)));
-		new Button(m_programmer_controller::getLeftBumper).whileHeld(new InstantCommand(m_intake::dropIntake))
-				.whenReleased(new InstantCommand(m_intake::raiseIntake));*/
+		//new Button(m_programmer_controller::getDPadRight)
+				//.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(100)));
+		//new Button(m_programmer_controller::getDPadLeft)
+				//.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(-100)));
+		//new Button(m_programmer_controller::getLeftBumper).whileHeld(new InstantCommand(m_intake::dropIntake))
+				//.whenReleased(new InstantCommand(m_intake::raiseIntake));*/
 				
 	}
 
