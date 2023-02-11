@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.LimeLightConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -14,7 +16,7 @@ public class LimeLight extends SubsystemBase {
   private NetworkTableEntry ty = table.getEntry("ty");
   private NetworkTableEntry ta = table.getEntry("ta");
   private NetworkTableEntry tv = table.getEntry("tv");
-
+  private RobotContainer m_robotContainer;
 
   public LimeLight() {
     /**
@@ -71,6 +73,13 @@ public class LimeLight extends SubsystemBase {
     return ta;
   }
 
+  public double getTxAngleRadians() {
+    return Units.degreesToRadians(tx.getDouble(0));
+  }
+
+  public double getTargetAngleRadians() {
+    return getTxAngleRadians()+m_robotContainer.getDrivetrain().getHeadingRadians();
+  }
 
 }
 
