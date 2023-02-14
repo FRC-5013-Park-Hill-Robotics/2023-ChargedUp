@@ -30,6 +30,7 @@ import frc.robot.subsystems.PhotonVision;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
@@ -102,7 +103,17 @@ public class RobotContainer {
 		// Back button zeros the gyroscope
 
 		
-		//new Trigger(m_operator_controller::getXButton).whenHeld(new AutoClimber(m_Climber, m_drivetrainSubsystem.getPitchR2d()::getDegrees));
+		new Trigger(m_operator_controller::getDPadLeft);
+		new Trigger(m_operator_controller::getDPadUp);
+		new Trigger(m_operator_controller::getDPadRight);
+		new Trigger(m_controller::getAButton);
+		new Trigger(m_controller::getBButton);
+		new Trigger(m_controller::getXButton);
+		new Trigger(m_controller::getYButton);
+		new Trigger(m_controller::getLeftBumper);
+		new Trigger(m_controller::getRightBumper);
+
+
 		//new Button(m_operator_controller::getBButton).whenPressed(new PreClimbCommand(this));
 		// programmer controls
 		//new Button(m_programmer_controller::getBButton).whileHeld(new InstantCommand(m_shooter::fire))

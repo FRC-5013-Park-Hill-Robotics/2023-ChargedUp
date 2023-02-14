@@ -12,11 +12,14 @@ import java.util.List;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -37,6 +40,7 @@ import frc.robot.Robot;
 public class PathPlannerCommandFactory {
     public static PathPlannerTrajectory trajectory2HAB;
     public static PathPlannerTrajectory trajectoryKittyWhipper;
+    public static PathPlannerTrajectory trajectoryFirstGrid;
     //public static List<PathPlannerTrajectory> trajectory?; 
     public static void init() {
         trajectory2HAB = PathPlanner.loadPath("2HAB",
@@ -45,6 +49,12 @@ public class PathPlannerCommandFactory {
         trajectoryKittyWhipper = PathPlanner.loadPath("KittyWhipper",
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND,
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
+
+        trajectoryFirstGrid = PathPlanner.generatePath(
+            new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/.33),
+            new PathPoint(new Translation2d(1.0, 1.0), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(90)), // position, heading(direction of travel), holonomic rotation
+            new PathPoint(new Translation2d(3.0, 3.0), Rotation2d.fromDegrees(45), Rotation2d.fromDegrees(90))); // position, heading(direction of travel), holonomic rotation
+
         //trajectory? = PathPlanner.loadPathGroup("?", MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33 )
     }
 
