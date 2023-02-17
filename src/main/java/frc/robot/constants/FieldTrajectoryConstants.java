@@ -19,9 +19,9 @@ public class FieldTrajectoryConstants {
 
     public static Alliance allianceColor = DriverStation.getAlliance();
 
-    public static double transformY(int gridIndex) {
+    public static double transformY(int gridIndex, Alliance alliance) {
 
-        if (isBlue()) {
+        if (alliance == Alliance.Blue) {
             double yPositionMeters = Units.inchesToMeters(yInchesPositionGridArray[getIndex(gridIndex)]);
             return yPositionMeters;
         }

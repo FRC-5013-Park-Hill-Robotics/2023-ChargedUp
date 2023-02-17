@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.ArmConstants.*;
-
+import frc.robot.constants.GlobalConstants.IntakeConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 
@@ -27,6 +27,7 @@ public class Arm extends SubsystemBase {
     private final PIDController m_rotationPIDController = new PIDController(rotationGains.kP, rotationGains.kI, rotationGains.kD);
     private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
     private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
+    
 
 
 	public PIDController getExtensionPIDController() {
@@ -36,6 +37,7 @@ public class Arm extends SubsystemBase {
     public PIDController getRotationPIDController() {
         return m_rotationPIDController;
     }
+    
 
     public void rotate(double percent) {
         m_rotationMotor.set(ControlMode.PercentOutput, percent);

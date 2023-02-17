@@ -48,7 +48,7 @@ public class ArmControl extends CommandBase {
 		// Deadband
 		value = MathUtil.applyDeadband(value, ControllerConstants.DEADBAND);
 
-		 value = Math.copySign(Math.pow(value, exponent), value);
+		value = Math.copySign(Math.pow(value, exponent), value);
 
 		return value;
 	}

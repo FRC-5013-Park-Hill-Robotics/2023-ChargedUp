@@ -19,6 +19,7 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
+    private static final Rotation2d INTAKE_ANGLE_DEGREES = IntakeConstants.INTAKE_ANGLE_DEGREES;
     private final CANSparkMax m_flexMotor = new CANSparkMax(0, MotorType.kBrushless);
     private final CANSparkMax m_intakeMotor = new CANSparkMax(0, MotorType.kBrushless);
     private final PIDController m_flexPIDController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
@@ -27,7 +28,7 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        setDefaultCommand(balanceAngle(IntakeConstants.INTAKE_ANGLE_DEGREES));
+        
 
 
     } 
@@ -47,14 +48,15 @@ public class Intake extends SubsystemBase {
         m_flexMotor.set(RobotContainer.voltageToPercentOutput(feedForward));
     }
 
-    public Command balanceAngle(Rotation2d angle) {
-        m_flexPIDController.setTolerance(angle.getRadians());
-        return run(() -> flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), angle.getRadians())))
-        .until(m_flexPIDController::atSetpoint)
-        .andThen(runOnce(() -> flexClosedLoop(0)));
-
+    @Override
+    public void periodic(){
+        m_flexPIDController.setTolerance(INTAKE_ANGLE_DEGREES.getRadians());
+        if (m_flexPIDController.atSetpoint()){
+            flexClosedLoop(0);
+        } else {
+            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), INTAKE_ANGLE_DEGREES.getRadians()));
+        }
     }
-
     
     }
 
