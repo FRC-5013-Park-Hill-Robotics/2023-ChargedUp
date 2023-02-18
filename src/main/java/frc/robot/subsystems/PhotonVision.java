@@ -63,8 +63,8 @@ public class PhotonVision extends SubsystemBase{
                 aprilTagFieldLayout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
             } 
 
-            m_frontPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_frontCamera,FrontCamera.robotToCam );
-            m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, m_rearCamera,RearCamera.robotToCam );
+            m_frontPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, m_frontCamera,FrontCamera.robotToCam );
+            m_rearPoseEstimator =new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP, m_rearCamera,RearCamera.robotToCam );
         }
     }
 
