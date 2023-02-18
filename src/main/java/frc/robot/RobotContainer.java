@@ -112,21 +112,6 @@ public class RobotContainer {
 		new Trigger(m_controller::getYButton);
 		new Trigger(m_controller::getLeftBumper);
 		new Trigger(m_controller::getRightBumper);
-
-
-		//new Button(m_operator_controller::getBButton).whenPressed(new PreClimbCommand(this));
-		// programmer controls
-		//new Button(m_programmer_controller::getBButton).whileHeld(new InstantCommand(m_shooter::fire))
-				//.whenReleased(new InstantCommand(m_shooter::stopFiring));
-		//new Button(m_programmer_controller::getYButton).whileHeld(new InstantCommand(m_conveyor::start));
-		//new Button(m_programmer_controller::getXButton).whileHeld(new InstantCommand(m_intake::start));// .whenReleased(new
-																									// InstantCommand(m_intake::stop));
-		//new Button(m_programmer_controller::getDPadRight)
-				//.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(100)));
-		//new Button(m_programmer_controller::getDPadLeft)
-				//.whenPressed(new InstantCommand(() -> m_shooter.changeSpeed(-100)));
-		//new Button(m_programmer_controller::getLeftBumper).whileHeld(new InstantCommand(m_intake::dropIntake))
-				//.whenReleased(new InstantCommand(m_intake::raiseIntake));*/
 				
 	}
 
