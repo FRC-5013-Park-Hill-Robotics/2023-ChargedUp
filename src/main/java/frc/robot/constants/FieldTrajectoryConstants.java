@@ -15,6 +15,14 @@ public class FieldTrajectoryConstants {
 
     public static final double robotHalfDistanceMeters = 0.36195;
 
+    public static final double blueChargingStationMiddleYMeters = 2.7494865;
+    //108.2475 in
+    
+    public static final double redChargingStationMiddleYMeters = fieldWidthMeters - blueChargingStationMiddleYMeters;
+
+    public static final double chargingStationMiddleXMeters = 2.45745;
+
+
     public static final double[] yInchesPositionGridArray = {20.19, 42.2475, 64.305, 86.3625, 108.42, 130.4775, 152.535, 174.5925, 196.65};
 
     public static Alliance allianceColor = DriverStation.getAlliance();
@@ -26,7 +34,7 @@ public class FieldTrajectoryConstants {
             return yPositionMeters;
         }
         else {
-            double yPositionMeters = fieldWidthMeters - Units.inchesToMeters(yInchesPositionGridArray[getIndex(gridIndex)]);
+            double yPositionMeters = (fieldWidthMeters) - Units.inchesToMeters(yInchesPositionGridArray[getIndex(gridIndex)]);
             return yPositionMeters;
         }
 
