@@ -25,6 +25,10 @@ public class CANConstants {
     public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 12;
     public static final int BACK_RIGHT_ENCODER_ID = 13;
 
+    public static final int WRIST_ID = 14;
+    public static final int SHOULDER_ID = 15;
+    public static final int INTAKE_ID = 16;
+
     }
 
 

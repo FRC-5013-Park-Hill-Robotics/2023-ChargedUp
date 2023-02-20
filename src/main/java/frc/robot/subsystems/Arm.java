@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
     private final TalonFX m_extensionMotor = new TalonFX(0, CANConstants.CANIVORE_NAME);
-    private final TalonFX m_rotationMotor = new TalonFX(0, CANConstants.CANIVORE_NAME);
+    private final TalonFX m_rotationMotor = new TalonFX(CANConstants.SHOULDER_ID, CANConstants.CANIVORE_NAME);
     private final PIDController m_extensionPIDController = new PIDController(extensionGains.kP, extensionGains.kI, extensionGains.kD);
     private final PIDController m_rotationPIDController = new PIDController(rotationGains.kP, rotationGains.kI, rotationGains.kD);
     private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
