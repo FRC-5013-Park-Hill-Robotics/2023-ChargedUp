@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +26,8 @@ public class Intake extends SubsystemBase {
     private final CANSparkMax m_intakeMotor = new CANSparkMax(CANConstants.INTAKE_ID, MotorType.kBrushless);
     private final PIDController m_flexPIDController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
     private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
-    private SimpleMotorFeedforward m_feedForward = new SimpleMotorFeedforward(IntakeConstants.kS, IntakeConstants.kV); 
+
+    private ArmFeedforward m_feedForward = new ArmFeedforward(IntakeConstants.kS, IntakeConstants.kG, IntakeConstants.kV); 
 
 
     public Intake() {
@@ -43,8 +44,8 @@ public class Intake extends SubsystemBase {
 
     }
 
-    public void flexClosedLoop(double velocity) {
-        double feedForward = m_feedForward.calculate(velocity, velocity, velocity); //calculate feed forward
+    public void flexClosedLoop(double velocity, double angleRadians) {
+        double feedForward = m_feedForward.calculate(angleRadians,velocity); //calculate feed forward
         double percentOutput = 0;//calculate percent out from feed forward
         m_flexMotor.set(percentOutput);
         m_flexMotor.set(RobotContainer.voltageToPercentOutput(feedForward));
@@ -52,13 +53,13 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic(){
-        /* because the flex motor is so fast commented out until we get good PID values and limits 
+        /*  because the flex motor is so fast commented out until we get good PID values and limits 
         so we dont break the wrist
         m_flexPIDController.setTolerance(INTAKE_ANGLE_DEGREES.getRadians());
         if (m_flexPIDController.atSetpoint()){
-            flexClosedLoop(0);
+            flexClosedLoop(0,INTAKE_ANGLE_DEGREES.getRadians());
         } else {
-            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), INTAKE_ANGLE_DEGREES.getRadians()));
+            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), INTAKE_ANGLE_DEGREES.getRadians()),INTAKE_ANGLE_DEGREES.getRadians());
         }
         */
     }
