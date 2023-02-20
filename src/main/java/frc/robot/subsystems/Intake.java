@@ -14,14 +14,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CANConstants;
 import frc.robot.constants.GlobalConstants.IntakeConstants;
 import frc.robot.RobotContainer;
+
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
     private static final Rotation2d INTAKE_ANGLE_DEGREES = IntakeConstants.INTAKE_ANGLE_DEGREES;
-    private final CANSparkMax m_flexMotor = new CANSparkMax(0, MotorType.kBrushless);
-    private final CANSparkMax m_intakeMotor = new CANSparkMax(0, MotorType.kBrushless);
+    private final CANSparkMax m_flexMotor = new CANSparkMax(CANConstants.WRIST_ID, MotorType.kBrushless);
+    private final CANSparkMax m_intakeMotor = new CANSparkMax(CANConstants.INTAKE_ID, MotorType.kBrushless);
     private final PIDController m_flexPIDController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
     private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
     private SimpleMotorFeedforward m_feedForward = new SimpleMotorFeedforward(IntakeConstants.kS, IntakeConstants.kV); 
@@ -50,12 +52,15 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic(){
+        /* because the flex motor is so fast commented out until we get good PID values and limits 
+        so we dont break the wrist
         m_flexPIDController.setTolerance(INTAKE_ANGLE_DEGREES.getRadians());
         if (m_flexPIDController.atSetpoint()){
             flexClosedLoop(0);
         } else {
             flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), INTAKE_ANGLE_DEGREES.getRadians()));
         }
+        */
     }
     
     }
