@@ -26,6 +26,7 @@ import frc.robot.commands.ArmControl;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PhotonVision;
 
 
@@ -66,6 +67,7 @@ public class RobotContainer {
 	private PowerDistribution m_PowerDistribution = new PowerDistribution(PCM_ID, ModuleType.kRev);
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
 	private PhotonVision m_photonVision;// = new PhotonVision();
+	private Intake m_intake = new Intake();
 	public static RobotContainer getInstance(){
 		return instance;
 	}
