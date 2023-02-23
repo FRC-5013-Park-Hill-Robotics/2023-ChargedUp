@@ -32,17 +32,20 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        
+        super();
+        m_intakeMotor.restoreFactoryDefaults();
+        m_flexMotor.restoreFactoryDefaults();
+        m_flexMotor.setInverted(true);
 
 
     } 
 
     public void pickUpCone() {
-
+        m_intakeMotor.set(-IntakeConstants.INTAKE_SPEED);
     }
 
     public void pickUpCube() {
-
+        m_intakeMotor.set(IntakeConstants.INTAKE_SPEED);
     }
 
     public void flexClosedLoop(double velocity, double angleRadians) {

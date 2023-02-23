@@ -104,16 +104,11 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Back button zeros the gyroscope
 
-		
-		new Trigger(m_operator_controller::getDPadLeft);
-		new Trigger(m_operator_controller::getDPadUp);
-		new Trigger(m_operator_controller::getDPadRight);
-		new Trigger(m_controller::getAButton);
-		new Trigger(m_controller::getBButton);
-		new Trigger(m_controller::getXButton);
-		new Trigger(m_controller::getYButton);
-		new Trigger(m_controller::getLeftBumper);
-		new Trigger(m_controller::getRightBumper);
+		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube));
+		//spin intake, cube
+
+		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCone));
+		//spin intake, cone
 				
 	}
 
