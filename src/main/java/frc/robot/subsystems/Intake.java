@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,10 @@ public class Intake extends SubsystemBase {
 
     } 
 
+    public double getAngle() {
+        return Units.degreesToRadians((m_angleEncoder.getAbsolutePosition()) * (m_angleEncoder.getPositionOffset()));
+    }
+
     public void pickUpCone() {
         m_intakeMotor.set(-IntakeConstants.INTAKE_SPEED);
     }
@@ -48,6 +53,10 @@ public class Intake extends SubsystemBase {
         m_intakeMotor.set(IntakeConstants.INTAKE_SPEED);
     }
 
+    public void stop() {
+        m_intakeMotor.set(0);
+    }
+    
     public void flexClosedLoop(double velocity, double angleRadians) {
         double feedForward = m_feedForward.calculate(angleRadians,velocity); //calculate feed forward
         double percentOutput = 0;//calculate percent out from feed forward

@@ -31,8 +31,8 @@ public class ArmControl extends CommandBase {
   public void execute() {
     double rotatePercent = modifyAxis(m_gamepad.getLeftY());
     double extendPercent = modifyAxis(m_gamepad.getRightY());
-    m_arm.extend(extendPercent);
-    m_arm.rotate(rotatePercent);
+    m_arm.extend(-extendPercent);
+    m_arm.rotate(-rotatePercent);
   }
 
   // Called once the command ends or is interrupted.

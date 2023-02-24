@@ -32,6 +32,7 @@ import frc.robot.subsystems.PhotonVision;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
@@ -104,10 +105,10 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Back button zeros the gyroscope
 
-		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube));
+		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new RunCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube
 
-		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCone));
+		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new RunCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cone
 				
 	}
