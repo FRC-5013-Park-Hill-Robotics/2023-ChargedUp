@@ -27,6 +27,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -36,6 +37,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import frc.robot.SwerveModule;
 import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.FieldTrajectoryConstants;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 
 
@@ -243,5 +245,13 @@ public class Drivetrain extends SubsystemBase {
         }
         return states;
     }
-	
+
+	public void engage(Pose2d pose, Alliance alliance) {
+		if ((pose.getY() > FieldTrajectoryConstants.blueChargingStationMiddleYMeters -0.5) && (pose.getY() < FieldTrajectoryConstants.blueChargingStationMiddleYMeters+0.5) && (pose.getX() > FieldTrajectoryConstants.chargingStationMiddleXMeters -0.5) && (pose.getX() <  FieldTrajectoryConstants.chargingStationMiddleXMeters +0.5) && (Alliance.Blue == alliance) ) {
+			setX();
+		}
+		else if ((pose.getY() > FieldTrajectoryConstants.redChargingStationMiddleYMeters -0.5) && (pose.getY() < FieldTrajectoryConstants.redChargingStationMiddleYMeters+0.5) && (pose.getX() > FieldTrajectoryConstants.chargingStationMiddleXMeters -0.5) && (pose.getX() <  FieldTrajectoryConstants.chargingStationMiddleXMeters +0.5) && (Alliance.Red == alliance) ) {
+			setX();
+		}
+	}
 }
