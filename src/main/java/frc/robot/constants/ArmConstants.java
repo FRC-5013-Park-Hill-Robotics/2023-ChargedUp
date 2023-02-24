@@ -8,8 +8,7 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class ArmConstants {
-    double placeholder = 0;
-
+    public static final double ARM_OFFSET_DEGREES = 0;
     public static final class extensionGains {
         public static double kP = 0;
         public static double kI = 0;

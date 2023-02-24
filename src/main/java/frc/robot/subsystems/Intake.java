@@ -10,11 +10,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.GlobalConstants.IntakeConstants;
@@ -23,26 +21,28 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
-    private static final Rotation2d INTAKE_ANGLE_DEGREES = IntakeConstants.INTAKE_ANGLE_DEGREES;
     private final CANSparkMax m_flexMotor = new CANSparkMax(CANConstants.WRIST_ID, MotorType.kBrushless);
     private final CANSparkMax m_intakeMotor = new CANSparkMax(CANConstants.INTAKE_ID, MotorType.kBrushless);
     private final PIDController m_flexPIDController = new PIDController(IntakeConstants.kP, IntakeConstants.kI, IntakeConstants.kD);
-    private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(1);
+    private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(CANConstants.WRIST_ANGLE_ENCODER);
 
     private ArmFeedforward m_feedForward = new ArmFeedforward(IntakeConstants.kS, IntakeConstants.kG, IntakeConstants.kV); 
+    private Arm m_arm;
 
 
-    public Intake() {
+    public Intake(Arm arm) {
         super();
         m_intakeMotor.restoreFactoryDefaults();
         m_flexMotor.restoreFactoryDefaults();
         m_flexMotor.setInverted(true);
+        m_angleEncoder.setPositionOffset(IntakeConstants.WRIST_OFFSET_DEGREES);
+        m_arm = arm;
 
 
     } 
 
-    public double getAngle() {
-        return Units.degreesToRadians((m_angleEncoder.getAbsolutePosition()) * (m_angleEncoder.getPositionOffset()));
+    public double getAngleRadians() {
+        return Units.degreesToRadians((m_angleEncoder.getAbsolutePosition()) - (m_angleEncoder.getPositionOffset()));
     }
 
     public void pickUpCone() {
@@ -57,23 +57,28 @@ public class Intake extends SubsystemBase {
         m_intakeMotor.set(0);
     }
     
-    public void flexClosedLoop(double velocity, double angleRadians) {
-        double feedForward = m_feedForward.calculate(angleRadians,velocity); //calculate feed forward
+    public void flexClosedLoop(double velocity) {
+        double feedForward = m_feedForward.calculate(getGroundRelativeWristPossitionRadians() + Math.PI/2 ,velocity); //calculate feed forward
         double percentOutput = 0;//calculate percent out from feed forward
         m_flexMotor.set(percentOutput);
         m_flexMotor.set(RobotContainer.voltageToPercentOutput(feedForward));
+    }
+
+    public double getGroundRelativeWristPossitionRadians(){
+        return m_arm.getArmAngleRadians() + getAngleRadians();
     }
 
     @Override
     public void periodic(){
         SmartDashboard.putNumber("WristAngle",m_angleEncoder.getAbsolutePosition());
         /*  because the flex motor is so fast commented out until we get good PID values and limits 
-        so we dont break the wrist
-        m_flexPIDController.setTolerance(INTAKE_ANGLE_DEGREES.getRadians());
+        so we dont break the wrist 
+        m_flexPIDController.setTolerance(IntakeConstants.WRIST_TOLERANCE.getRadians());
+        m_flexPIDController.setSetpoint(IntakeConstants.TARGET_WRIST_ANGLE.getRadians());
         if (m_flexPIDController.atSetpoint()){
-            flexClosedLoop(0,INTAKE_ANGLE_DEGREES.getRadians());
+            flexClosedLoop(0);
         } else {
-            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get(), INTAKE_ANGLE_DEGREES.getRadians()),INTAKE_ANGLE_DEGREES.getRadians());
+            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.get()));
         }
         */
     }
