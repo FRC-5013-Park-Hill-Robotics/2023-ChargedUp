@@ -68,7 +68,7 @@ public class RobotContainer {
 	private PowerDistribution m_PowerDistribution = new PowerDistribution(PCM_ID, ModuleType.kRev);
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
 	private PhotonVision m_photonVision;// = new PhotonVision();
-	private Intake m_intake = new Intake();
+	private Intake m_intake = new Intake(m_arm);
 	public static RobotContainer getInstance(){
 		return instance;
 	}

@@ -16,11 +16,12 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.ArmConstants;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.ArmConstants.*;
-import frc.robot.constants.GlobalConstants.IntakeConstants;
+import static frc.robot.constants.ArmConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.util.Units;
 
 
 
@@ -31,12 +32,14 @@ public class Arm extends SubsystemBase {
     private final PIDController m_extensionPIDController = new PIDController(extensionGains.kP, extensionGains.kI, extensionGains.kD);
     private final PIDController m_rotationPIDController = new PIDController(rotationGains.kP, rotationGains.kI, rotationGains.kD);
     private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
-    private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
+    private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(CANConstants.ARM_ANGLE_ENCODER);
     //private ArmFeedforward m_feedForward = new ArmFeedforward(ArmConstants.kS, ArmConstants.kG, ArmConstants.kV); 
 
 
     public Arm() {
+        m_extensionMotor.configFactoryDefault();
         m_extensionMotor.setNeutralMode(NeutralMode.Brake);
+        m_angleEncoder.setPositionOffset(ARM_OFFSET_DEGREES);
     }
 
 	public PIDController getExtensionPIDController() {
@@ -75,11 +78,15 @@ public class Arm extends SubsystemBase {
 
     public Command rotateToCommand(Rotation2d angle) {
         m_rotationPIDController.setTolerance(angle.getRadians());
-        return run(() -> rotateClosedLoop(m_extensionPIDController.calculate(m_angleEncoder.get(), angle.getRadians())))
+        m_rotationPIDController.setSetpoint(angle.getRadians());
+        return run(() -> rotateClosedLoop(m_extensionPIDController.calculate(m_angleEncoder.get())))
         .until(m_extensionPIDController::atSetpoint)
         .andThen(runOnce(() -> rotateClosedLoop(0)));
     }
 
+    public double getArmAngleRadians(){
+        return Units.degreesToRadians((m_angleEncoder.getAbsolutePosition()) - (m_angleEncoder.getPositionOffset()));
+    }
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Arm Angle", m_angleEncoder.getAbsolutePosition());
