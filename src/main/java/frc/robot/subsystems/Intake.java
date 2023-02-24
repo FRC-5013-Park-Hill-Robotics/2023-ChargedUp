@@ -59,9 +59,7 @@ public class Intake extends SubsystemBase {
     
     public void flexClosedLoop(double velocity) {
         double feedForward = m_feedForward.calculate(getGroundRelativeWristPossitionRadians() ,velocity); //calculate feed forward
-        double percentOutput = 0;//calculate percent out from feed forward
-        m_flexMotor.set(percentOutput);
-        m_flexMotor.set(RobotContainer.voltageToPercentOutput(feedForward));
+        m_flexMotor.setVoltage(feedForward);
     }
 
     public double getGroundRelativeWristPossitionRadians(){
