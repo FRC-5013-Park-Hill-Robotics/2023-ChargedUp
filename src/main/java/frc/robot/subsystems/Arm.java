@@ -19,6 +19,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.ArmConstants.*;
 import static frc.robot.constants.ArmConstants.*;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.util.Units;
 
@@ -77,7 +78,8 @@ public class Arm extends SubsystemBase {
 
     public Command rotateToCommand(Rotation2d angle) {
         m_rotationPIDController.setTolerance(angle.getRadians());
-        return run(() -> rotateClosedLoop(m_extensionPIDController.calculate(m_angleEncoder.get(), angle.getRadians())))
+        m_rotationPIDController.setSetpoint(angle.getRadians());
+        return run(() -> rotateClosedLoop(m_extensionPIDController.calculate(m_angleEncoder.get())))
         .until(m_extensionPIDController::atSetpoint)
         .andThen(runOnce(() -> rotateClosedLoop(0)));
     }

@@ -36,8 +36,6 @@ public class ArmConstants {
         public static double midNode = 0;
         public static double highNode = 0;
     }
-
-    double intakeTolerance = Units.degreesToRadians(3);
     //degrees to radians
 
 
