@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
     private final PIDController m_extensionPIDController = new PIDController(ExtensionGains.kP, ExtensionGains.kI, ExtensionGains.kD);
     private final Constraints m_rotationConstraints = new Constraints(RotationConstraints.MAX_ROTATION_VELOCITY_RPS, RotationConstraints.MAX_ROTATION_ACCELERATION_RPSPS);
     private final ProfiledPIDController m_rotationPIDController = new ProfiledPIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD,m_rotationConstraints);
-    private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
+    private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(CANConstants.ARM_ANGLE_ENCODER);
     private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
     private double angleSetpointRadians ;
