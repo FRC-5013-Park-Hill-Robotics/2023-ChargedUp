@@ -30,7 +30,7 @@ public class ArmConstants {
     }
 
     public static final class RotationConstraints{
-        public static final double MAX_ROTATION_VELOCITY_RPS = 8.38;
+        public static final double MAX_ROTATION_VELOCITY_RPS = 3 * Math.PI / 2;
         public static final double MAX_ROTATION_ACCELERATION_RPSPS = MAX_ROTATION_VELOCITY_RPS * 3;
     }
 
