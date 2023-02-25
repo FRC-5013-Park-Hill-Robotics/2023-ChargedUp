@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class ArmConstants {
-    public static final double ARM_OFFSET_DEGREES = 0;
+    public static final double ARM_OFFSET_DEGREES = 255;
     public static final class ExtensionGains {
         public static final double kP = 0;
         public static final double kI = 0;
@@ -19,13 +19,14 @@ public class ArmConstants {
 
     public static final class RotationGains {
         public static final Rotation2d TOLERANCE= Rotation2d.fromDegrees(3);
-        public static final double kP = 0;
+        public static final double kP = 8.0735;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 1.7543;
         public static final double kF = 0;
-        public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double kV = 0;
+        public static final double kS = 0.15431;
+        public static final double kG = 0.051777;
+        public static final double kV = 0.7442;
+        public static final double kA = 0.194;
     }
 
     public static final class RotationConstraints{
