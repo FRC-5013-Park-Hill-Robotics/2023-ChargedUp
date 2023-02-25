@@ -56,7 +56,11 @@ public class Arm extends SubsystemBase {
     public ProfiledPIDController getRotationPIDController() {
         return m_rotationPIDController;
     }
-    
+    public Command rotateToCommand(Rotation2d angle) {
+        return run(() -> setAngleSetpointRadians(angle.getRadians()))
+            .until(m_extensionPIDController::atSetpoint)
+            .andThen(runOnce(() -> hold()));
+    }
 
     public void rotate(double percent) {
         if (percent == 0.0){
