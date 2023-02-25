@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class ArmConstants {
-    public static final double ARM_OFFSET_DEGREES = 255;
+    public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(255);
     public static final class ExtensionGains {
         public static final double kP = 0;
         public static final double kI = 0;

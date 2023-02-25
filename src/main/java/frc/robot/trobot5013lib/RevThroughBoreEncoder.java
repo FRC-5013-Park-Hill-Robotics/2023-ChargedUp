@@ -6,6 +6,7 @@ package frc.robot.trobot5013lib;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class RevThroughBoreEncoder {
@@ -32,21 +33,23 @@ public class RevThroughBoreEncoder {
     }
 
     public void setInverted(boolean inverted){
-        m_Inverted = false;
+        m_Inverted = inverted;
     }
 
     public Rotation2d getAngle(){
         double angle = m_dutyCycleEncoder.getDistance() % 360;
+          
         angle -= m_offset.getDegrees();
+     
         if (m_Inverted){
-            angle *= -1;
+            angle = 360-angle;
         } 
 
         if (angle < 0.0){
             angle = angle + 360;
         }
 
-        return Rotation2d.fromDegrees(angle);
+        return Rotation2d.fromDegrees(angle % 360);
 
     }
 

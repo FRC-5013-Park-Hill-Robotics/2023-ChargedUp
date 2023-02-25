@@ -22,7 +22,7 @@ public final class DrivetrainConstants {
     public DrivetrainConstants(double kp, double ki, double kd) {
     }
 
-    public static final CanPort PIGEON_ID = new CanPort(14,CANIVORE_NAME);
+    public static final CanPort PIGEON_ID = new CanPort(CANConstants.PIGEON_ID,CANIVORE_NAME);
     //public static final GearRatio SWERVE_GEAR_RATIO = GearRatio.L2;
     /**
      * The maximum voltage that will be delivered to the drive motors.

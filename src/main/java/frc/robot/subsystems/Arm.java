@@ -18,8 +18,11 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.ArmConstants.*;
+import frc.robot.trobot5013lib.RevThroughBoreEncoder;
+
 import static frc.robot.constants.ArmConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,15 +38,17 @@ public class Arm extends SubsystemBase {
     private final Constraints m_rotationConstraints = new Constraints(RotationConstraints.MAX_ROTATION_VELOCITY_RPS, RotationConstraints.MAX_ROTATION_ACCELERATION_RPSPS);
     private final ProfiledPIDController m_rotationPIDController = new ProfiledPIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD,m_rotationConstraints);
     private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(CANConstants.ARM_ANGLE_ENCODER);
-    private final DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(CANConstants.ARM_ANGLE_ENCODER);
+    private final RevThroughBoreEncoder m_angleEncoder = new RevThroughBoreEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
     private double angleSetpointRadians ;
     private boolean isOpenLoopRotation = true;
 
     public Arm() {
+        m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_extensionMotor.configFactoryDefault();
         m_extensionMotor.setNeutralMode(NeutralMode.Brake);
-        m_angleEncoder.setPositionOffset(ARM_OFFSET_DEGREES);
+        m_angleEncoder.setInverted(true);
+        m_angleEncoder.setOffset(ArmConstants.ARM_OFFSET_DEGREES);
         setAngleSetpointRadians(getArmAngleRadians());
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
         isOpenLoopRotation = false;
@@ -96,7 +101,7 @@ public class Arm extends SubsystemBase {
     }
 
     public double getArmAngleRadians(){
-        return Units.degreesToRadians((m_angleEncoder.getAbsolutePosition()) - (m_angleEncoder.getPositionOffset()));
+        return ((m_angleEncoder.getAngle()).getRadians());
     }
 
     public double getAngleSetpointRadians() {
@@ -113,7 +118,7 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Arm Angle", m_angleEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Arm Angle", (m_angleEncoder.getAngle()).getDegrees());
         if (isOpenLoopRotation) {
             m_rotationPIDController.reset(getArmAngleRadians());
         } else {
