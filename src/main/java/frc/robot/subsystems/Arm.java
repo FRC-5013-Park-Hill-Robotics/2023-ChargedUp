@@ -64,7 +64,9 @@ public class Arm extends SubsystemBase {
 
     public void rotate(double percent) {
         if (percent == 0.0){
-            hold();
+            if (isOpenLoopRotation){
+                hold();
+            }
         } else {
             isOpenLoopRotation = true;
             m_rotationMotor.set(ControlMode.PercentOutput, percent);

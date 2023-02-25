@@ -29,8 +29,8 @@ public class ArmConstants {
     }
 
     public static final class RotationConstraints{
-        public static final double MAX_ROTATION_VELOCITY_RPS = 0;
-        public static final double MAX_ROTATION_ACCELERATION_RPSPS = 0;
+        public static final double MAX_ROTATION_VELOCITY_RPS = 8.38;
+        public static final double MAX_ROTATION_ACCELERATION_RPSPS = MAX_ROTATION_VELOCITY_RPS * 3;
     }
 
     public static final class ExtensionSetpoints {
