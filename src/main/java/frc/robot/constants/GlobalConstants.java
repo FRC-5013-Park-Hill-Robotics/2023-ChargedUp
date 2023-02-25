@@ -46,7 +46,7 @@ public final class GlobalConstants {
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0.8;
-        public static final double kV = 0.1;
+        public static final double kV = 1;
         public static final double kG = 0.8;
     }
 

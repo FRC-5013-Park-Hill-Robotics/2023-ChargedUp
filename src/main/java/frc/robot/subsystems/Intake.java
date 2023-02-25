@@ -74,13 +74,9 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("WristAngle",(m_angleEncoder.getAngle()).getDegrees());
         m_flexPIDController.setTolerance(IntakeConstants.WRIST_TOLERANCE.getRadians());
         m_flexPIDController.setSetpoint(IntakeConstants.TARGET_WRIST_ANGLE.getRadians());
-        if (m_flexPIDController.atSetpoint()){
-            flexClosedLoop(0);
-        } else {
-            flexClosedLoop(m_flexPIDController.calculate(m_angleEncoder.getAngle().getRadians()));
-        }
+        flexClosedLoop(m_flexPIDController.calculate(getGroundRelativeWristPossitionRadians()));
     }
     
-    }
+ }
 
 
