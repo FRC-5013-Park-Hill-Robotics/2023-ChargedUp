@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -36,7 +37,7 @@ public class Arm extends SubsystemBase {
     private final TalonFX m_rotationMotor = new TalonFX(CANConstants.SHOULDER_ID);
     private final PIDController m_extensionPIDController = new PIDController(ExtensionGains.kP, ExtensionGains.kI, ExtensionGains.kD);
     private final Constraints m_rotationConstraints = new Constraints(RotationConstraints.MAX_ROTATION_VELOCITY_RPS, RotationConstraints.MAX_ROTATION_ACCELERATION_RPSPS);
-    private final ProfiledPIDController m_rotationPIDController = new ProfiledPIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD,m_rotationConstraints);
+    private final PIDController m_rotationPIDController = new PIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD);
     private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(CANConstants.ARM_ANGLE_ENCODER);
     private final RevThroughBoreEncoder m_angleEncoder = new RevThroughBoreEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
@@ -52,13 +53,14 @@ public class Arm extends SubsystemBase {
         setAngleSetpointRadians(getArmAngleRadians());
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
         isOpenLoopRotation = false;
+        SmartDashboard.putData("Arm Rotation PID Controller", m_rotationPIDController);
     }
 
 	public PIDController getExtensionPIDController() {
 		return m_extensionPIDController;
 	}
 
-    public ProfiledPIDController getRotationPIDController() {
+    public PIDController getRotationPIDController() {
         return m_rotationPIDController;
     }
     public Command rotateToCommand(Rotation2d angle) {
@@ -96,7 +98,10 @@ public class Arm extends SubsystemBase {
 
     public void rotateClosedLoop(double velocity) {
         isOpenLoopRotation = false;
+        SmartDashboard.putNumber("OUTPUT", velocity);
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
+        SmartDashboard.putNumber("FeedForward", feedForward);
+        SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(feedForward));
         m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
     }
 
@@ -114,15 +119,19 @@ public class Arm extends SubsystemBase {
 
     public void hold(){
         setAngleSetpointRadians(getArmAngleRadians());
+        isOpenLoopRotation = false;
     }
 
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Arm Angle", (m_angleEncoder.getAngle()).getDegrees());
         if (isOpenLoopRotation) {
-            m_rotationPIDController.reset(getArmAngleRadians());
+            m_rotationPIDController.reset();
         } else {
-            m_rotationPIDController.setGoal(getAngleSetpointRadians());
+            SmartDashboard.putNumber("Setpoint", getAngleSetpointRadians());
+            SmartDashboard.putNumber("Measurement", getArmAngleRadians());
+            SmartDashboard.putNumber("Error", getAngleSetpointRadians() - getArmAngleRadians() );
+            m_rotationPIDController.setSetpoint(getAngleSetpointRadians());
             rotateClosedLoop(m_extensionPIDController.calculate(getArmAngleRadians()));
         }
     }

@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LogitechController;
@@ -29,8 +31,8 @@ public class ArmControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rotatePercent = modifyAxis(m_gamepad.getLeftY());
-    double extendPercent = modifyAxis(m_gamepad.getRightY());
+    double rotatePercent = modifyAxis(m_gamepad.getLeftY())/2;
+    double extendPercent = modifyAxis(m_gamepad.getRightY())/2;
     m_arm.extend(-extendPercent);
     m_arm.rotate(-rotatePercent);
   }
@@ -41,7 +43,7 @@ public class ArmControl extends CommandBase {
   
   private static double modifyAxis(double value) {
 	
-		return modifyAxis(value, 1);
+		return modifyAxis(value, 2);
 	}
 
 	private static double modifyAxis(double value, int exponent) {
