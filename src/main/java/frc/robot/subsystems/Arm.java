@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -52,6 +53,7 @@ public class Arm extends SubsystemBase {
         setAngleSetpointRadians(getArmAngleRadians());
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
         isOpenLoopRotation = false;
+        SmartDashboard.putData("Arm Rotation PID Controller", m_rotationPIDController);
     }
 
 	public PIDController getExtensionPIDController() {
@@ -96,10 +98,10 @@ public class Arm extends SubsystemBase {
 
     public void rotateClosedLoop(double velocity) {
         isOpenLoopRotation = false;
-        SmartDashboard.putNumber("OUTPUT", Math.toDegrees(velocity));
+        SmartDashboard.putNumber("OUTPUT", velocity);
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
-        SmartDashboard.putNumber("FeefForward", feedForward);
-        SmartDashboard.putNumber("Percent Out", RobotContainer.voltageToPercentOutput(feedForward));
+        SmartDashboard.putNumber("FeedForward", feedForward);
+        SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(feedForward));
         m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
     }
 
@@ -112,16 +114,12 @@ public class Arm extends SubsystemBase {
     }
 
     public void setAngleSetpointRadians(double angleSetpoint) {
-        if ( this.angleSetpointRadians != angleSetpoint){
-            this.angleSetpointRadians = angleSetpoint;
-            m_rotationPIDController.reset();
-        }
-        
+        this.angleSetpointRadians = angleSetpoint;
     }
 
     public void hold(){
-        isOpenLoopRotation = false;
         setAngleSetpointRadians(getArmAngleRadians());
+        isOpenLoopRotation = false;
     }
 
     @Override
@@ -129,9 +127,10 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Arm Angle", (m_angleEncoder.getAngle()).getDegrees());
         if (isOpenLoopRotation) {
             m_rotationPIDController.reset();
-            setAngleSetpointRadians(getArmAngleRadians());
         } else {
-            SmartDashboard.putNumber("Setpoint" , Math.toDegrees(getAngleSetpointRadians()));
+            SmartDashboard.putNumber("Setpoint", getAngleSetpointRadians());
+            SmartDashboard.putNumber("Measurement", getArmAngleRadians());
+            SmartDashboard.putNumber("Error", getAngleSetpointRadians() - getArmAngleRadians() );
             m_rotationPIDController.setSetpoint(getAngleSetpointRadians());
             rotateClosedLoop(m_extensionPIDController.calculate(getArmAngleRadians()));
         }
