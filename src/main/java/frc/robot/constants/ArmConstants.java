@@ -18,6 +18,7 @@ public class ArmConstants {
     }
 
     public static final class RotationGains {
+        public static final double kGPercent = 0.075;
         public static final Rotation2d TOLERANCE= Rotation2d.fromDegrees(3);
         public static final double kP = 8.0735;
         public static final double kI = 0;
