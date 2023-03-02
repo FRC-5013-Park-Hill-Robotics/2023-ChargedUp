@@ -36,7 +36,7 @@ public class ArmControl extends CommandBase {
     double rotatePercent = modifyAxis(m_gamepad.getLeftY())/2;
     if (rotatePercent > 0){
       rotatePercent = rotatePercent * (1-kGPercent) + kGPercent;
-    } else if (rotatePercent > 0) {
+    } else if (rotatePercent < 0) {
       rotatePercent = rotatePercent * (kGPercent) + kGPercent;
     }
     double extendPercent = modifyAxis(m_gamepad.getRightY())/2;
