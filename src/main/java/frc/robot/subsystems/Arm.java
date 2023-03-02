@@ -27,6 +27,7 @@ import frc.robot.trobot5013lib.RevThroughBoreEncoder;
 import static frc.robot.constants.ArmConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.math.util.Units;
 
 
@@ -43,6 +44,9 @@ public class Arm extends SubsystemBase {
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
     private double angleSetpointRadians ;
     private boolean isOpenLoopRotation = true;
+    private boolean isOpenLooExtension = true;
+    private double extensionSetpoint; 
+
 
     public Arm() {
         m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
@@ -56,6 +60,14 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putData("Arm Rotation PID Controller", m_rotationPIDController);
     }
 
+    
+    public double  getExtensionSetpoint() {
+        return extensionSetpoint;
+    }
+
+    public void setExtensionSetpoint(double extensionSetpoint) {
+        this.extensionSetpoint = extensionSetpoint;
+    }
 	public PIDController getExtensionPIDController() {
 		return m_extensionPIDController;
 	}
@@ -82,16 +94,41 @@ public class Arm extends SubsystemBase {
 
     public Command extendToCommand(double length) {
         m_extensionPIDController.setTolerance(length);
-        return run(() -> extendClosedLoop(m_extensionPIDController.calculate(m_potentiometer.get(), length)))
+        return run(() -> setExtensionSetpoint(length))
         .until(m_extensionPIDController::atSetpoint)
-        .andThen(runOnce(() -> extendClosedLoop(0)));
+        .andThen(runOnce(() -> holdExtension()));
+    }
+
+    public Command extendAndRotateCommand(Rotation2d angle, double length) {
+        m_extensionPIDController.setTolerance(length);
+        return run(() -> setExtensionAndRotation(angle.getRadians(),length))
+        .until(this::isExtenstionAndRotationAtSetpoint)
+        .andThen(runOnce(() -> holdExtension()));
+    }
+
+    public void setExtensionAndRotation(double angle, double length){
+       setExtensionSetpoint(length);
+       setAngleSetpointRadians(angle);
+    }
+
+    public boolean isExtenstionAndRotationAtSetpoint(){
+        return m_extensionPIDController.atSetpoint() && m_rotationPIDController.atSetpoint();
     }
 
     public void extend(double percent) {
-        m_extensionMotor.set(ControlMode.PercentOutput, percent);
+        if (percent == 0.0){
+            if (isOpenLooExtension){
+                holdExtension();
+            }
+        } else {
+            isOpenLooExtension = true;
+            m_extensionMotor.set(ControlMode.PercentOutput, percent);
+        }
+       
     }
 
     public void extendClosedLoop(double velocity) {
+        isOpenLooExtension = false;
         double feedForward = 0; //calculate feed forward
         m_extensionMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
     }
@@ -122,6 +159,11 @@ public class Arm extends SubsystemBase {
         isOpenLoopRotation = false;
     }
 
+    public void holdExtension(){
+        setExtensionSetpoint(getCurrentExtension());
+        isOpenLooExtension = false;
+    }
+
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Arm Angle", (m_angleEncoder.getAngle()).getDegrees());
@@ -132,8 +174,19 @@ public class Arm extends SubsystemBase {
             SmartDashboard.putNumber("Measurement", getArmAngleRadians());
             SmartDashboard.putNumber("Error", getAngleSetpointRadians() - getArmAngleRadians() );
             m_rotationPIDController.setSetpoint(getAngleSetpointRadians());
-            rotateClosedLoop(m_extensionPIDController.calculate(getArmAngleRadians()));
+            rotateClosedLoop(m_rotationPIDController.calculate(getArmAngleRadians()));
         }
+
+        if (isOpenLooExtension) {
+            m_extensionPIDController.reset();
+        } else {
+            m_extensionPIDController.setSetpoint(getExtensionSetpoint());
+            extendClosedLoop(m_extensionPIDController.calculate(getCurrentExtension()));
+        }
+    }
+
+    public double getCurrentExtension(){
+        return m_potentiometer == null?0:m_potentiometer.get();
     }
 
 }
