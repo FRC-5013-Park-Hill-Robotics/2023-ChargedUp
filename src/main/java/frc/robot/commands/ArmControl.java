@@ -10,7 +10,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LogitechController;
 import frc.robot.subsystems.Arm;
+import frc.robot.constants.ArmConstants;
 import frc.robot.constants.GlobalConstants.ControllerConstants;
+import static frc.robot.constants.ArmConstants.RotationGains.kGPercent;
 
 public class ArmControl extends CommandBase {
   /** Creates a new ArmControl. */
@@ -32,6 +34,11 @@ public class ArmControl extends CommandBase {
   @Override
   public void execute() {
     double rotatePercent = modifyAxis(m_gamepad.getLeftY())/2;
+    if (rotatePercent > 0){
+      rotatePercent = rotatePercent * (1-kGPercent) + kGPercent;
+    } else if (rotatePercent > 0) {
+      rotatePercent = rotatePercent * (kGPercent) + kGPercent;
+    }
     double extendPercent = modifyAxis(m_gamepad.getRightY())/2;
     m_arm.extend(-extendPercent);
     m_arm.rotate(-rotatePercent);
