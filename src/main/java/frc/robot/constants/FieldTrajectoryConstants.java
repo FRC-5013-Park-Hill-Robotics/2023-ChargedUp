@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 /** Add your docs here. */
 public class FieldTrajectoryConstants {
     public static final double fieldWidthMeters = 8.02;
+    public static final double fieldWidthInches = 315.748;
 
     public static final double robotHalfDistanceMeters = 0.36195;
 
