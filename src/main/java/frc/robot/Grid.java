@@ -28,4 +28,6 @@ public class Grid {
     public Node getRightNode() {
         return this.rightNode;
     }
+
+
 }
