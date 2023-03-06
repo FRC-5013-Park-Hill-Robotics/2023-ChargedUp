@@ -14,6 +14,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
@@ -110,7 +111,9 @@ public class RobotContainer {
 
 		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new RunCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cone
-				
+			
+		new Trigger(m_operator_controller::getAButton).onTrue(m_arm.extendToCommand(.3));
+		new Trigger(m_operator_controller::getBButton).onTrue(m_arm.rotateToCommand((Rotation2d.fromDegrees(0))));
 	}
 
 	/**

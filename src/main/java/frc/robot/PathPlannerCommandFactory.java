@@ -84,6 +84,7 @@ public class PathPlannerCommandFactory {
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
+
         Command fullAuto = RobotContainer.getSwerveAutoBuilder().fullAuto(pathGroup);
         return fullAuto;
     }

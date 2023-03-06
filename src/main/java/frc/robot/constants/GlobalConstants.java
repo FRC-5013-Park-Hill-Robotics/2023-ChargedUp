@@ -39,15 +39,15 @@ public final class GlobalConstants {
         public static final int ROLLER_SERVO = 0;
 
         public static final Rotation2d WRIST_OFFSET_DEGREES = Rotation2d.fromDegrees(249);
-        public static final Rotation2d TARGET_WRIST_ANGLE = Rotation2d.fromDegrees(15);
-        public static final Rotation2d WRIST_TOLERANCE = Rotation2d.fromDegrees(3);
+        public static final Rotation2d TARGET_WRIST_ANGLE = Rotation2d.fromDegrees(17);
+        public static final Rotation2d WRIST_TOLERANCE = Rotation2d.fromDegrees(2);
 
         public static final double kP = 1.1;
         public static final double kI = 0;
         public static final double kD = 0.05;
         public static final double kS = 0.8;
         public static final double kV = 1;
-        public static final double kG = 0.8;
+        public static final double kG = 1.1;
     }
 
     public static final class LEDConstants {

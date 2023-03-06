@@ -10,24 +10,36 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public class ArmConstants {
     public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(255);
+    public static final double SPOOL_DIAMETER = Units.inchesToMeters(2.0);
+    public static final double DISTANCE_PER_SPOOL_REVOLUTION_METERS = SPOOL_DIAMETER * Math.PI;
+    public static final double SPOOL_ROTATIONS_PER_METER = 1/DISTANCE_PER_SPOOL_REVOLUTION_METERS;
+    public static final double FALCON_ROTATIONS_PER_SPOOL = 5.0;
+    public static final double PULSES_PER_FALCON_ROTATION = 2048;
+    public static final double PULSES_PER_METER_EXTENSION = SPOOL_ROTATIONS_PER_METER * FALCON_ROTATIONS_PER_SPOOL * PULSES_PER_FALCON_ROTATION;
+
     public static final class ExtensionGains {
-        public static final double kP = 0;
+        public static final double kP = 15;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0;
+        public static final double kS = 0.61252;
+        public static final double kV = 3.0345;
+        public static final double kA = 0.16965;
     }
 
     public static final class RotationGains {
         public static final double kGPercent = 0.075;
-        public static final Rotation2d TOLERANCE= Rotation2d.fromDegrees(3);
-        public static final double kP = 8.0735;
+        public static final Rotation2d TOLERANCE= Rotation2d.fromDegrees(2.5);
+        //public static final double kP = 8.0735;
+        public static final double kP = 4.5031;
         public static final double kI = 0;
-        public static final double kD = 1.7543;
+        public static final double kD = 0.90318; //1.7543;
         public static final double kF = 0;
-        public static final double kS = 0.15431;
-        public static final double kG = 0.9;
-        public static final double kV = 0.7442;
-        public static final double kA = 0.194;
+        public static final double kS = 0.03424;
+        //public static final double kG = 0.46137;  
+        public static final double kG = 0.95;
+        public static final double kV = 2.8521;
+        public static final double kA = 0.04607;
     }
 
     public static final class RotationConstraints{

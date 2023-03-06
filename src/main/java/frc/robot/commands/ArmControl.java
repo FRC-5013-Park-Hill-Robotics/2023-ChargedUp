@@ -7,6 +7,7 @@ package frc.robot.commands;
 import org.opencv.core.Mat;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LogitechController;
 import frc.robot.subsystems.Arm;
@@ -33,15 +34,14 @@ public class ArmControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double rotatePercent = modifyAxis(m_gamepad.getLeftY())/2;
-    if (rotatePercent > 0){
-      rotatePercent = rotatePercent * (1-kGPercent) + kGPercent;
-    } else if (rotatePercent < 0) {
-      rotatePercent = rotatePercent * (kGPercent) + kGPercent;
-    }
+    double rotatePercent = -modifyAxis(m_gamepad.getLeftY())/2;
+    //rotatePercent = rotatePercent * (1-kGPercent) + kGPercent;
+    m_arm.rotate(rotatePercent);
+    SmartDashboard.putNumber("LeftY", m_gamepad.getLeftY());
+    SmartDashboard.putNumber("RightY", m_gamepad.getRightY());
     double extendPercent = modifyAxis(m_gamepad.getRightY())/2;
     m_arm.extend(-extendPercent);
-    m_arm.rotate(-rotatePercent);
+   
   }
 
   // Called once the command ends or is interrupted.

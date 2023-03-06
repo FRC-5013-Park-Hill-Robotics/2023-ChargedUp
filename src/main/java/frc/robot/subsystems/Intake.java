@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +37,7 @@ public class Intake extends SubsystemBase {
         m_intakeMotor.restoreFactoryDefaults();
         m_flexMotor.restoreFactoryDefaults();
         m_flexMotor.setInverted(true);
+        m_flexMotor.setIdleMode(IdleMode.kBrake);
         m_flexPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_angleEncoder.setOffset(IntakeConstants.WRIST_OFFSET_DEGREES);
         m_angleEncoder.setInverted(true);
@@ -61,6 +63,7 @@ public class Intake extends SubsystemBase {
     }
     
     public void flexClosedLoop(double velocity) {
+        SmartDashboard.putNumber("Flex velocity", velocity);
         double feedForward = m_feedForward.calculate(getGroundRelativeWristPossitionRadians() ,velocity); //calculate feed forward
         m_flexMotor.setVoltage(feedForward);
     }
@@ -72,6 +75,7 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic(){
         SmartDashboard.putNumber("WristAngle",(m_angleEncoder.getAngle()).getDegrees());
+        SmartDashboard.putNumber("WriseAngleGround",Units.radiansToDegrees(getGroundRelativeWristPossitionRadians())); 
         m_flexPIDController.setTolerance(IntakeConstants.WRIST_TOLERANCE.getRadians());
         m_flexPIDController.setSetpoint(IntakeConstants.TARGET_WRIST_ANGLE.getRadians());
         flexClosedLoop(m_flexPIDController.calculate(getGroundRelativeWristPossitionRadians()));
