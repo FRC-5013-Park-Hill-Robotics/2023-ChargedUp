@@ -12,12 +12,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
 import frc.robot.constants.ArmConstants;
 import frc.robot.constants.CANConstants;
@@ -28,6 +30,7 @@ import static frc.robot.constants.ArmConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.util.Units;
 
 
@@ -39,9 +42,10 @@ public class Arm extends SubsystemBase {
     private final PIDController m_extensionPIDController = new PIDController(ExtensionGains.kP, ExtensionGains.kI, ExtensionGains.kD);
     private final Constraints m_rotationConstraints = new Constraints(RotationConstraints.MAX_ROTATION_VELOCITY_RPS, RotationConstraints.MAX_ROTATION_ACCELERATION_RPSPS);
     private final PIDController m_rotationPIDController = new PIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD);
-    private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(CANConstants.ARM_ANGLE_ENCODER);
+    private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
     private final RevThroughBoreEncoder m_angleEncoder = new RevThroughBoreEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
+    private SimpleMotorFeedforward m_extensionFeedForward = new SimpleMotorFeedforward(ExtensionGains.kS, ExtensionGains.kA, ExtensionGains.kA);
     private double angleSetpointRadians ;
     private boolean isOpenLoopRotation = true;
     private boolean isOpenLooExtension = true;
@@ -49,14 +53,31 @@ public class Arm extends SubsystemBase {
 
 
     public Arm() {
-        m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
-        m_extensionMotor.configFactoryDefault();
-        m_extensionMotor.setNeutralMode(NeutralMode.Brake);
         m_angleEncoder.setInverted(true);
         m_angleEncoder.setOffset(ArmConstants.ARM_OFFSET_DEGREES);
         setAngleSetpointRadians(getArmAngleRadians());
+       
+        m_extensionMotor.configFactoryDefault();
+        m_extensionMotor.setNeutralMode(NeutralMode.Brake);
+        m_extensionMotor.setInverted(true);
+        resetExtensionEncoder();
+        setExtensionSetpoint(getCurrentExtensionDistance());
+        m_extensionMotor.setSensorPhase(true);
+        m_extensionPIDController.setTolerance(0.03);
+        m_extensionPIDController.disableContinuousInput();
+        isOpenLooExtension = false;
+
+      //  new Trigger(this::isExtensionCurrentSpike).onTrue(new InstantCommand(this::resetExtensionEncoder));
+       
+        m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
+
+        m_rotationMotor.configFactoryDefault();
+        m_rotationMotor.setNeutralMode(NeutralMode.Brake);
+        m_rotationMotor.setInverted(false);
         isOpenLoopRotation = false;
+
+  
         SmartDashboard.putData("Arm Rotation PID Controller", m_rotationPIDController);
     }
 
@@ -66,7 +87,9 @@ public class Arm extends SubsystemBase {
     }
 
     public void setExtensionSetpoint(double extensionSetpoint) {
+ 
         this.extensionSetpoint = extensionSetpoint;
+    
     }
 	public PIDController getExtensionPIDController() {
 		return m_extensionPIDController;
@@ -76,12 +99,11 @@ public class Arm extends SubsystemBase {
         return m_rotationPIDController;
     }
     public Command rotateToCommand(Rotation2d angle) {
-        return run(() -> setAngleSetpointRadians(angle.getRadians()))
-            .until(m_extensionPIDController::atSetpoint)
-            .andThen(runOnce(() -> hold()));
+        return runOnce(() -> setAngleSetpointRadians(angle.getRadians()));
     }
 
     public void rotate(double percent) {
+        SmartDashboard.putNumber("RotateRotercent", percent);
         if (percent == 0.0){
             if (isOpenLoopRotation){
                 hold();
@@ -94,9 +116,7 @@ public class Arm extends SubsystemBase {
 
     public Command extendToCommand(double length) {
         m_extensionPIDController.setTolerance(length);
-        return run(() -> setExtensionSetpoint(length))
-        .until(m_extensionPIDController::atSetpoint)
-        .andThen(runOnce(() -> holdExtension()));
+        return runOnce(() -> setExtensionSetpoint(length));
     }
 
     public Command extendAndRotateCommand(Rotation2d angle, double length) {
@@ -116,6 +136,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void extend(double percent) {
+        SmartDashboard.putNumber("Extendercent", percent);
         if (percent == 0.0){
             if (isOpenLooExtension){
                 holdExtension();
@@ -123,13 +144,21 @@ public class Arm extends SubsystemBase {
         } else {
             isOpenLooExtension = true;
             m_extensionMotor.set(ControlMode.PercentOutput, percent);
+            
         }
        
     }
 
     public void extendClosedLoop(double velocity) {
         isOpenLooExtension = false;
-        double feedForward = 0; //calculate feed forward
+        double feedForward = m_extensionFeedForward.calculate(velocity);
+        if (velocity < 0){
+            feedForward = feedForward - 1.56;
+        }
+        SmartDashboard.putNumber("ExVel", velocity);
+        SmartDashboard.putNumber("ExFeedForward", feedForward);
+        SmartDashboard.putNumber("ExVoltage",RobotContainer.voltageToPercentOutput(feedForward));
+        
         m_extensionMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
     }
 
@@ -143,7 +172,7 @@ public class Arm extends SubsystemBase {
     }
 
     public double getArmAngleRadians(){
-        return ((m_angleEncoder.getAngle()).getRadians());
+        return m_angleEncoder.getAngle().getRadians();
     }
 
     public double getAngleSetpointRadians() {
@@ -160,19 +189,25 @@ public class Arm extends SubsystemBase {
     }
 
     public void holdExtension(){
-        setExtensionSetpoint(getCurrentExtension());
+        setExtensionSetpoint(getCurrentExtensionDistance());
         isOpenLooExtension = false;
     }
 
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Arm Angle", (m_angleEncoder.getAngle()).getDegrees());
+        SmartDashboard.putNumber("Setpoint", Units.radiansToDegrees(getAngleSetpointRadians()));
+        SmartDashboard.putNumber("Measurement", Units.radiansToDegrees(getArmAngleRadians()));
+        SmartDashboard.putNumber("Error", Units.radiansToDegrees(getAngleSetpointRadians() - getArmAngleRadians()) );
+        SmartDashboard.putNumber("Extension Sensor  Position",m_extensionMotor.getSelectedSensorPosition());
+        SmartDashboard.putBoolean("isOpenLoopRotation", isOpenLoopRotation);
+        SmartDashboard.putNumber("Extension Meters", getCurrentExtensionDistance());
+        SmartDashboard.putNumber("Extension Setpoint", getExtensionSetpoint());
+        SmartDashboard.putNumber("Extension Error", getExtensionSetpoint()-getCurrentExtensionDistance());
         if (isOpenLoopRotation) {
             m_rotationPIDController.reset();
         } else {
-            SmartDashboard.putNumber("Setpoint", getAngleSetpointRadians());
-            SmartDashboard.putNumber("Measurement", getArmAngleRadians());
-            SmartDashboard.putNumber("Error", getAngleSetpointRadians() - getArmAngleRadians() );
+
             m_rotationPIDController.setSetpoint(getAngleSetpointRadians());
             rotateClosedLoop(m_rotationPIDController.calculate(getArmAngleRadians()));
         }
@@ -181,13 +216,22 @@ public class Arm extends SubsystemBase {
             m_extensionPIDController.reset();
         } else {
             m_extensionPIDController.setSetpoint(getExtensionSetpoint());
-            extendClosedLoop(m_extensionPIDController.calculate(getCurrentExtension()));
+            extendClosedLoop(m_extensionPIDController.calculate(getCurrentExtensionDistance()));
         }
+
     }
 
-    public double getCurrentExtension(){
-        return m_potentiometer == null?0:m_potentiometer.get();
+    public boolean isExtensionCurrentSpike(){
+        return m_extensionMotor.getStatorCurrent() > 30;
     }
 
+    public void resetExtensionEncoder(){
+        m_extensionMotor.setSelectedSensorPosition(0);
+    }
+
+    
+    public double getCurrentExtensionDistance(){
+        return m_extensionMotor.getSelectedSensorPosition()/PULSES_PER_METER_EXTENSION;
+    }
 }
 
