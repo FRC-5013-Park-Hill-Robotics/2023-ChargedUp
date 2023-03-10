@@ -67,7 +67,7 @@ public class Arm extends SubsystemBase {
         m_extensionPIDController.disableContinuousInput();
         isOpenLooExtension = false;
 
-      //  new Trigger(this::isExtensionCurrentSpike).onTrue(new InstantCommand(this::resetExtensionEncoder));
+        new Trigger(this::isExtensionCurrentSpike).onTrue(new InstantCommand(this::resetExtensionEncoder));
        
         m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
