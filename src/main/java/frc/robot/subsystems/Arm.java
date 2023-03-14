@@ -42,7 +42,6 @@ public class Arm extends SubsystemBase {
     private final PIDController m_extensionPIDController = new PIDController(ExtensionGains.kP, ExtensionGains.kI, ExtensionGains.kD);
     private final Constraints m_rotationConstraints = new Constraints(RotationConstraints.MAX_ROTATION_VELOCITY_RPS, RotationConstraints.MAX_ROTATION_ACCELERATION_RPSPS);
     private final PIDController m_rotationPIDController = new PIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD);
-    private final AnalogPotentiometer m_potentiometer = new AnalogPotentiometer(0);
     private final RevThroughBoreEncoder m_angleEncoder = new RevThroughBoreEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
     private SimpleMotorFeedforward m_extensionFeedForward = new SimpleMotorFeedforward(ExtensionGains.kS, ExtensionGains.kA, ExtensionGains.kA);
@@ -50,6 +49,9 @@ public class Arm extends SubsystemBase {
     private boolean isOpenLoopRotation = true;
     private boolean isOpenLooExtension = true;
     private double extensionSetpoint; 
+
+
+
 
 
     public Arm() {
@@ -120,10 +122,9 @@ public class Arm extends SubsystemBase {
     }
 
     public Command extendAndRotateCommand(Rotation2d angle, double length) {
-        m_extensionPIDController.setTolerance(length);
-        return run(() -> setExtensionAndRotation(angle.getRadians(),length))
-        .until(this::isExtenstionAndRotationAtSetpoint)
-        .andThen(runOnce(() -> holdExtension()));
+        return run( () -> setExtensionSetpoint(length))
+            .until(m_extensionPIDController::atSetpoint)
+            .andThen( runOnce( () -> setAngleSetpointRadians(angle.getRadians())));
     }
 
     public void setExtensionAndRotation(double angle, double length){
@@ -186,11 +187,13 @@ public class Arm extends SubsystemBase {
     public void hold(){
         setAngleSetpointRadians(getArmAngleRadians());
         isOpenLoopRotation = false;
+        rotateClosedLoop(0);
     }
 
     public void holdExtension(){
         setExtensionSetpoint(getCurrentExtensionDistance());
         isOpenLooExtension = false;
+        extendClosedLoop(0);
     }
 
     @Override
@@ -203,8 +206,9 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putBoolean("isOpenLoopRotation", isOpenLoopRotation);
         SmartDashboard.putNumber("Extension Meters", getCurrentExtensionDistance());
         SmartDashboard.putNumber("Extension Setpoint", getExtensionSetpoint());
-        SmartDashboard.putNumber("Extension Error", getExtensionSetpoint()-getCurrentExtensionDistance());
-        if (isOpenLoopRotation) {
+        SmartDashboard.putNumber("Extension Error", m_extensionPIDController.getPositionError());
+        SmartDashboard.putBoolean("At  E set", m_extensionPIDController.atSetpoint());
+   /*   if (isOpenLoopRotation) {
             m_rotationPIDController.reset();
         } else {
 
@@ -217,7 +221,7 @@ public class Arm extends SubsystemBase {
         } else {
             m_extensionPIDController.setSetpoint(getExtensionSetpoint());
             extendClosedLoop(m_extensionPIDController.calculate(getCurrentExtensionDistance()));
-        }
+        }*/
 
     }
 
