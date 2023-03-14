@@ -68,8 +68,6 @@ public class Arm extends SubsystemBase {
         m_extensionPIDController.setTolerance(0.03);
         m_extensionPIDController.disableContinuousInput();
         isOpenLooExtension = false;
-
-        new Trigger(this::isExtensionCurrentSpike).onTrue(new InstantCommand(this::resetExtensionEncoder));
        
         m_rotationPIDController.enableContinuousInput(0, 2 * Math.PI);
         m_rotationPIDController.setTolerance(RotationGains.TOLERANCE.getRadians());
@@ -159,11 +157,13 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("ExVel", velocity);
         SmartDashboard.putNumber("ExFeedForward", feedForward);
         SmartDashboard.putNumber("ExVoltage",RobotContainer.voltageToPercentOutput(feedForward));
-        
         m_extensionMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
     }
 
     public void rotateClosedLoop(double velocity) {
+        if (getArmAngleRadians() > Units.degreesToRadians(95)){
+            velocity = 0;
+        }
         isOpenLoopRotation = false;
         SmartDashboard.putNumber("OUTPUT", velocity);
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
@@ -185,8 +185,6 @@ public class Arm extends SubsystemBase {
     }
 
     public void hold(){
-        setAngleSetpointRadians(getArmAngleRadians());
-        isOpenLoopRotation = false;
         rotateClosedLoop(0);
     }
 
@@ -208,20 +206,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("Extension Setpoint", getExtensionSetpoint());
         SmartDashboard.putNumber("Extension Error", m_extensionPIDController.getPositionError());
         SmartDashboard.putBoolean("At  E set", m_extensionPIDController.atSetpoint());
-   /*   if (isOpenLoopRotation) {
-            m_rotationPIDController.reset();
-        } else {
 
-            m_rotationPIDController.setSetpoint(getAngleSetpointRadians());
-            rotateClosedLoop(m_rotationPIDController.calculate(getArmAngleRadians()));
-        }
-
-        if (isOpenLooExtension) {
-            m_extensionPIDController.reset();
-        } else {
-            m_extensionPIDController.setSetpoint(getExtensionSetpoint());
-            extendClosedLoop(m_extensionPIDController.calculate(getCurrentExtensionDistance()));
-        }*/
 
     }
 
