@@ -18,7 +18,7 @@ public class ArmConstants {
     public static final double PULSES_PER_METER_EXTENSION = SPOOL_ROTATIONS_PER_METER * FALCON_ROTATIONS_PER_SPOOL * PULSES_PER_FALCON_ROTATION;
 
     public static final class ExtensionGains {
-        public static final double kP = 15;
+        public static final double kP = 30;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0;
@@ -31,7 +31,7 @@ public class ArmConstants {
         public static final double kGPercent = 0.075;
         public static final Rotation2d TOLERANCE= Rotation2d.fromDegrees(2.5);
         //public static final double kP = 8.0735;
-        public static final double kP = 4.5031;
+        public static final double kP = 2.5;
         public static final double kI = 0;
         public static final double kD = 0.90318; //1.7543;
         public static final double kF = 0;
@@ -50,7 +50,7 @@ public class ArmConstants {
     public static final class ExtensionSetpoints {
         //
         public static final double LOW = 0;
-        public static final double MID = 0.107;
+        public static final double MID = 0.15;
         public static final double HIGH = 0;
         public static final double DOUBLE_SUBSTATION = 0.3;
 
@@ -59,9 +59,9 @@ public class ArmConstants {
     }
 
     public static final class RotationSetpoints {
-        //in degrees initially
-        public static final double LOW_RADIANS = Units.degreesToRadians(0);
-        public static final double MID_RADIANS = Units.degreesToRadians(52);
+        //in degrees initially, conv to rad
+        public static final double LOW_RADIANS = Units.degreesToRadians(352);
+        public static final double MID_RADIANS = Units.degreesToRadians(53);
         public static final double HIGH_RADIANS = Units.degreesToRadians(0);
         public static final double DOUBLE_SUBSTATION_RADIANS = Units.degreesToRadians(63);
         public static final double GROUND_RADIANS = Units.degreesToRadians(355);
@@ -69,4 +69,9 @@ public class ArmConstants {
     //degrees to radians
 
     //substation height 3 foot 7
+
+    //249 wrist angle
+
+    //317 wrist angle
+
 }

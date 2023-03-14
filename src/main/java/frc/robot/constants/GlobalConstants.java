@@ -38,7 +38,7 @@ public final class GlobalConstants {
 		public static final double INTAKE_SPEED = 0.5;
         public static final int ROLLER_SERVO = 0;
 
-        public static final Rotation2d WRIST_OFFSET_DEGREES = Rotation2d.fromDegrees(249);
+        public static final Rotation2d WRIST_OFFSET_DEGREES = Rotation2d.fromDegrees(-116);
         public static final Rotation2d TARGET_WRIST_ANGLE = Rotation2d.fromDegrees(17);
         public static final Rotation2d WRIST_TOLERANCE = Rotation2d.fromDegrees(2);
 
