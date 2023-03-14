@@ -106,10 +106,10 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Back button zeros the gyroscope
 
-		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new RunCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
+		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube
 
-		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new RunCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
+		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cone
 			
 		new Trigger(m_operator_controller::getAButton).onTrue(m_arm.extendToCommand(.3));
@@ -181,7 +181,9 @@ public class RobotContainer {
 		return MathUtil.clamp(voltage/Math.min(12, getPowerDistributionInstance().getVoltage()), -1, 1);
 	}
 
-
+	public Arm getArm(){
+		return m_arm;
+	}
 /*
 	public StatusLED getStatusLED() {
 		return m_StatusLED;

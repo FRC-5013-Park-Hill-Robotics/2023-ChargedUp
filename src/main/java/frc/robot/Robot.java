@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     ctreConfigs = new CTREConfigs();
     m_robotContainer = new RobotContainer();
+    m_robotContainer.getArm().hold();
     PathPlannerCommandFactory.init();
   }
 
