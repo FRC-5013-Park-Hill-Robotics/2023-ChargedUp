@@ -24,6 +24,9 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArmControl;
+import frc.robot.commands.ArmExtend;
+import frc.robot.commands.ArmExtendAndRotate;
+import frc.robot.commands.ArmRotate;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -36,6 +39,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
+import frc.robot.constants.ArmConstants;
+import static frc.robot.constants.ArmConstants.*;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
 
 
@@ -104,8 +109,22 @@ public class RobotContainer {
 	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		// Back button zeros the gyroscope
-
+		//double substation 
+	/* 	new Trigger(m_operator_controller::getAButton).whileTrue(m_arm.extendAndRotateCommand(
+			Rotation2d.fromDegrees(ArmConstants.RotationSetpoints.DOUBLE_SUBSTATION), ArmConstants.ExtensionSetpoints.DOUBLE_SUBSTATION));
+	*/
+	double x = ExtensionSetpoints.DOUBLE_SUBSTATION;
+		new Trigger(m_operator_controller::getAButton)
+			.whileTrue(new ArmExtendAndRotate(m_arm, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS, ExtensionSetpoints.DOUBLE_SUBSTATION));
+		new Trigger(m_operator_controller::getBButton)
+			.whileTrue(new ArmRotate(m_arm, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS));
+	
+		new Trigger(m_operator_controller::getXButton)
+			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION));
+	
+		/*new Trigger(m_operator_controller::getBButton).whileTrue(m_arm.extendAndRotateCommand(
+			Rotation2d.fromDegrees(ArmConstants.RotationSetpoints.MID_RADIANS), ArmConstants.ExtensionSetpoints.MID));
+	*/
 		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube
 

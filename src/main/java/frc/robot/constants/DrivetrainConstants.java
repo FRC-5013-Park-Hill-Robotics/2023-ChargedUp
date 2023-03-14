@@ -135,7 +135,7 @@ public final class DrivetrainConstants {
         public static final CanPort driveMotorID = new CanPort(BACK_LEFT_DRIVE_MOTOR_ID, CANIVORE_NAME);
         public static final CanPort angleMotorID = new CanPort(BACK_LEFT_STEER_MOTOR_ID, CANIVORE_NAME);
         public static final CanPort canCoderID = new CanPort(BACK_LEFT_ENCODER_ID, CANIVORE_NAME);
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(147.9);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(143.5);
         public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -145,45 +145,12 @@ public final class DrivetrainConstants {
         public static final CanPort driveMotorID = new CanPort(BACK_RIGHT_DRIVE_MOTOR_ID, CANIVORE_NAME);
         public static final CanPort angleMotorID = new CanPort(BACK_RIGHT_STEER_MOTOR_ID, CANIVORE_NAME);
         public static final CanPort canCoderID = new CanPort(BACK_RIGHT_ENCODER_ID, CANIVORE_NAME);
-        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(337);
+        public static final Rotation2d angleOffset = Rotation2d.fromDegrees(332.7);
         public static final SwerveModuleConstants constants = 
             new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
 
 
-/* 
-    public static final class FrontLeftSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(FRONT_LEFT_STEER_MOTOR_ID,CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(FRONT_LEFT_DRIVE_MOTOR_ID,CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(FRONT_LEFT_ENCODER_ID, CANIVORE_NAME);
-        public static final double ENCODER_OFFSET_RADIANS =  -Math.toRadians(0);            
-        public static final int STATES_INDEX = 0;
-    }
-
-    public static final class FrontRightSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(FRONT_RIGHT_STEER_MOTOR_ID,CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(FRONT_RIGHT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(FRONT_RIGHT_ENCODER_ID,GlobalConstants.CANIVORE_NAME);
-        public static final double ENCODER_OFFSET_RADIANS = -Math.toRadians(0);
-        public static final int STATES_INDEX = 1;
-    }
-
-    public static final class BackLeftSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(BACK_LEFT_STEER_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(BACK_LEFT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(BACK_LEFT_ENCODER_ID,GlobalConstants.CANIVORE_NAME);
-        public static final double ENCODER_OFFSET_RADIANS = -Math.toRadians(0);
-        public static final int STATES_INDEX = 2;
-    }
-
-    public static final class BackRightSwerveConstants {
-        public static final CanPort STEER_MOTOR_ID = new CanPort(BACK_RIGHT_STEER_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort DRIVE_MOTOR_ID = new CanPort(BACK_RIGHT_DRIVE_MOTOR_ID,GlobalConstants.CANIVORE_NAME);
-        public static final CanPort ENCODER_ID = new CanPort(BACK_RIGHT_ENCODER_ID,GlobalConstants.CANIVORE_NAME);
-        public static final double ENCODER_OFFSET_RADIANS =  -Math.toRadians(0);
-        public static final int STATES_INDEX = 3;
-    }
-*/
     // Turning the bot gains used by PIDControllers
     public static final class ThetaGains {
         public static final double kP = 4;
@@ -204,5 +171,10 @@ public final class DrivetrainConstants {
         public static final double kS = 0.60483;
     }
     //
+    public static final double BALANCE_LEVEL_DEGREES = 2.5;
+    public static final double BALANCE_FULL_TILT_DEGREES = 15;
+    public static final double BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER = 1.35;
+    public static final double BALANCE_KP = 0.01;
+    public static final double BALANCE_MAX_POWER = 0.4;
 
 }

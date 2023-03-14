@@ -254,4 +254,47 @@ public class Drivetrain extends SubsystemBase {
 			setX();
 		}
 	}
+
+	public void balance() {
+		double yaw, direction, angle, error, power;
+		angle = 0;
+		direction = 0;
+
+		yaw = Math.abs(getYawR2d().getDegrees() % 360);
+
+		if ((0 <= yaw && yaw < 45) || (315 <= yaw && yaw <= 360)) {
+			direction = 1;
+			angle = getRollR2d().getDegrees();
+		} else if (45 <= yaw && yaw < 135) {
+			direction = 1;
+			angle =getPitchR2d().getDegrees();
+		} else if (135 <= yaw && yaw < 225) {
+			direction = -1;
+			angle = getRollR2d().getDegrees();
+		} else if (225 <= yaw && yaw < 315) {
+			direction = -1;
+			angle = getPitchR2d().getDegrees();
+		}
+
+		if (angle > DrivetrainConstants.BALANCE_FULL_TILT_DEGREES) {
+			return;
+		}
+
+		error = Math.copySign(DrivetrainConstants.BALANCE_LEVEL_DEGREES + Math.abs(angle), angle);
+		power = Math.min(Math.abs(DrivetrainConstants.BALANCE_KP * error), DrivetrainConstants.BALANCE_MAX_POWER);
+		power = Math.copySign(power, error);
+
+		power *= direction;
+
+		drive(power, 0, 0);
+	}
+	public void drive(double x, double y, double rotation) {
+		ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+				x * DrivetrainConstants.maxSpeed,
+				y * DrivetrainConstants.maxSpeed,
+				rotation * DrivetrainConstants.maxAngularVelocity,
+				getYawR2d());
+
+		drive(chassisSpeeds);
+	}
 }
