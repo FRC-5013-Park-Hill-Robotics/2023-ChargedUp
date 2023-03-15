@@ -208,6 +208,10 @@ public class RobotContainer {
 	public Arm getArm(){
 		return m_arm;
 	}
+
+	public Intake getIntake() {
+		return m_intake;
+	}
 /*
 	public StatusLED getStatusLED() {
 		return m_StatusLED;
