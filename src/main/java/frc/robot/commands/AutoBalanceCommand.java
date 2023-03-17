@@ -20,7 +20,7 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public void initialize() {
-       // SwerveDriveSubsystem.getInstance().zero();
+       m_drivetrain.resetBalance();
        
     }
 

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.constants.DrivetrainConstants;
@@ -40,6 +41,7 @@ import frc.robot.AutonomousCommandFactory;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ArmExtend;
 import frc.robot.commands.ArmRotate;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.Robot;
 
 /** Add your docs here. */
@@ -54,6 +56,7 @@ public class PathPlannerCommandFactory {
     public static PathPlannerTrajectory trajectory7U;
     public static PathPlannerTrajectory trajectory8U;
     public static PathPlannerTrajectory trajectory9U;
+    public static PathPlannerTrajectory trajectoryEngage;
 
     public static PathPlannerTrajectory trajectory2HAB;
     public static PathPlannerTrajectory trajectoryKittyWhipper;
@@ -92,6 +95,9 @@ public class PathPlannerCommandFactory {
         trajectory9U = PathPlanner.loadPath("9U",
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND,
 		MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
+        trajectoryEngage = PathPlanner.loadPath("Dock",
+		MAX_AUTO_VELOCITY_METERS_PER_SECOND,
+		MAX_AUTO_VELOCITY_METERS_PER_SECOND / .33);
 
         trajectoryFirstGrid = PathPlanner.generatePath(
             new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/.33),
@@ -113,12 +119,13 @@ public class PathPlannerCommandFactory {
     public static String path7U = "7U";
     public static String path8U = "8U";
     public static String path9U = "9U";
+    public static String pathEngage = "Engage";
 
 	public static String path2HAB = "2HAB";
 	public static String pathCurvy = "Curvy";
     public static String pathKittyWhipper = "KittyWhipper";
 
-	public static final String[] AUTOS = {path2HAB, pathCurvy, pathKittyWhipper, path1MA, path2A, path3A, path4A, path5A, path5U, path6U, path7U, path8U, path9U};
+	public static final String[] AUTOS = {path2HAB, pathCurvy, pathKittyWhipper, path1MA, path2A, path3A, path4A, path5A, path5U, path6U, path7U, path8U, path9U, pathEngage};
 
     public static Command createAutonomous(RobotContainer container, String name) {
 		if (path2HAB.equals(name)) {
@@ -168,6 +175,11 @@ public class PathPlannerCommandFactory {
         else if (pathKittyWhipper.equals(name)) {
             return createKittyWhipper(container);
         }
+
+        else if (pathEngage.equals(name)) {
+            return createEngage(container);
+        }
+
 		else {
 			return create2HAB(container);
 		}
@@ -175,7 +187,7 @@ public class PathPlannerCommandFactory {
     /// call it inside the methods, instead of declaring in main space SwerveAutoBuilder autoBuilder = getSwerveAutoBuilder();
 
     private static Command create1MA(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("1MA", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("1MA", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         SequentialCommandGroup mid = new SequentialCommandGroup(new ArmRotate(container.getArm(), 0),
             new ArmExtend(container.getArm(), ExtensionSetpoints.MID),
@@ -191,7 +203,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create2A(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("2A", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("2A", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -201,7 +213,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create3A(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("3A", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("3A", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -211,7 +223,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create4A(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("4A", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("4A", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -221,7 +233,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create5A(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("5A", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("5A", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -231,7 +243,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create5U(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("5U", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("5U", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -241,7 +253,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create6U(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("6U", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("6U", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -251,7 +263,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create7U(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("7U", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("7U", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -261,7 +273,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create8U(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("8U", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("8U", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -271,7 +283,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command create9U(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("9U", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("9U", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -280,8 +292,19 @@ public class PathPlannerCommandFactory {
         return fullAuto;
     }
 
+    private static Command createEngage(RobotContainer container) {
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("Dock", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("Balance", new AutoBalanceCommand(container.getDrivetrain()));
+        eventMap.put("X", new RunCommand(container.getDrivetrain()::setX));
+        //eventMap.put("intakeDown", new IntakeDown());
+
+        Command fullAuto = RobotContainer.getSwerveAutoBuilder().fullAuto(pathGroup);
+        return fullAuto;
+    }
+
     public static Command create2HAB(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("2HAB", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("2HAB", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -291,7 +314,7 @@ public class PathPlannerCommandFactory {
     }
 
     public static Command createKittyWhipper(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("KittyWhipper", new PathConstraints(3, 4));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("KittyWhipper", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_VELOCITY_METERS_PER_SECOND/3));
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("marker1", new PrintCommand("Passed marker 1"));
         //eventMap.put("intakeDown", new IntakeDown());

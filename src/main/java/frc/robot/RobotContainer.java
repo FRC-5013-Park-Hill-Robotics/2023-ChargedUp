@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArmControl;
 import frc.robot.commands.ArmExtend;
 import frc.robot.commands.ArmRotate;
+import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
@@ -115,6 +116,17 @@ public class RobotContainer {
 	double x = ExtensionSetpoints.DOUBLE_SUBSTATION;
 	
 		
+		new Trigger(m_controller::getXButton)
+			.whileTrue(new RunCommand(m_drivetrainSubsystem::setX,m_drivetrainSubsystem));
+
+		new Trigger(m_controller::getAButton)
+			.whileTrue(new AutoBalanceCommand(m_drivetrainSubsystem)
+				.andThen(new RunCommand(m_drivetrainSubsystem::setX,m_drivetrainSubsystem)));
+
+		new Trigger(m_controller::getBackButton)
+			.whileTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+		
+
 		//extemd and rotate to double substation
 		new Trigger(m_operator_controller::getXButton)
 			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION)
@@ -137,6 +149,7 @@ public class RobotContainer {
 		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cone
 			
+	
 
 	}
 

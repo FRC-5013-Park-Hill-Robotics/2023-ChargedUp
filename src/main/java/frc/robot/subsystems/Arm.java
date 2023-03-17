@@ -104,6 +104,7 @@ public class Arm extends SubsystemBase {
 
     public void rotate(double percent) {
         SmartDashboard.putNumber("RotateRotercent", percent);
+
         if (percent == 0.0){
             if (isOpenLoopRotation){
                 hold();
@@ -161,9 +162,7 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateClosedLoop(double velocity) {
-        if (getArmAngleRadians() > Units.degreesToRadians(95)){
-            velocity = 0;
-        }
+
         isOpenLoopRotation = false;
         SmartDashboard.putNumber("OUTPUT", velocity);
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
