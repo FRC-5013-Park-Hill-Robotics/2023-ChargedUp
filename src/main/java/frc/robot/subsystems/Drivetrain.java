@@ -28,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -58,10 +59,11 @@ public class Drivetrain extends SubsystemBase {
 	// FIX We need to figure out initial possition.
 	private Pose2d m_pose = new Pose2d();
 	private SwerveDrivePoseEstimator m_PoseEstimator ;
-	private PIDController balancePID = new PIDController(0.012, 0, .008);
+	private PIDController balancePID = new PIDController(0.014, 0, .008);
 	private double oldPitch;
 	// These are our modules. We initialize them in the constructor.
 	public SwerveModule[] mSwerveMods;
+	private double time;
 
 	private SwerveModuleState[] m_desiredStates;
 
@@ -260,8 +262,13 @@ public class Drivetrain extends SubsystemBase {
 
 	public void balance() {
 		double pitch = getPitchR2d().getDegrees();
-		if (Math.abs(pitch) < Math.abs(oldPitch)){
+		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9) || (Math.signum(pitch) != Math.signum(oldPitch));
+		boolean waiting = time != 00 && time+0.1 > Timer.getFPGATimestamp();
+		if (waiting ){
+			drive(0,0,0);
+		} else if (better) {
 			//it is getting better so wait.
+			time = Timer.getFPGATimestamp();
 			drive(0,0,0);
 		} else {
 			//drive 

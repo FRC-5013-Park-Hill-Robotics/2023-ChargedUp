@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.ArmBrake;
 import frc.robot.commands.ArmControl;
 import frc.robot.commands.ArmExtend;
 import frc.robot.commands.ArmRotate;
@@ -54,7 +55,7 @@ import frc.robot.constants.DrivetrainConstants.ThetaGains;
 public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 	public static RobotContainer instance;
-	private final Map<String, Command> eventMap = new HashMap<>();
+	private final HashMap<String, Command> eventMap = new HashMap<>();
 	private final Drivetrain m_drivetrainSubsystem = new Drivetrain();
 	private final Arm m_arm = new Arm();
 	private final SwerveAutoBuilder m_autoBuilder = new SwerveAutoBuilder(
@@ -124,8 +125,10 @@ public class RobotContainer {
 				.andThen(new RunCommand(m_drivetrainSubsystem::setX,m_drivetrainSubsystem)));
 
 		new Trigger(m_controller::getBackButton)
-			.whileTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
-		
+			.onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+
+		new Trigger(m_controller::getStartButton)
+			.onTrue(new InstantCommand(m_drivetrainSubsystem::resetModulesToAbsolute));
 
 		//extemd and rotate to double substation
 		new Trigger(m_operator_controller::getXButton)
@@ -141,7 +144,9 @@ public class RobotContainer {
 		new Trigger(m_operator_controller::getBButton)
 			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.MID)
 				.andThen(new ArmRotate(m_arm, RotationSetpoints.MID_RADIANS)));
-			
+
+		new Trigger(m_operator_controller::getYButton)
+				.whileTrue(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold)));
 
 		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube
@@ -191,7 +196,7 @@ public class RobotContainer {
 		return getInstance().m_autoBuilder;
 	}
 
-	public static Map<String, Command> getEventMap() {
+	public static HashMap<String, Command> getEventMap() {
 		return getInstance().eventMap;
 	}
 
