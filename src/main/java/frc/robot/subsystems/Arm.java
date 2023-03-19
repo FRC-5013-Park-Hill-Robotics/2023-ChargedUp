@@ -44,6 +44,7 @@ public class Arm extends SubsystemBase {
     private final PIDController m_rotationPIDController = new PIDController(RotationGains.kP, RotationGains.kI, RotationGains.kD);
     private final RevThroughBoreEncoder m_angleEncoder = new RevThroughBoreEncoder(CANConstants.ARM_ANGLE_ENCODER);
     private ArmFeedforward m_rotationFeedForward = new ArmFeedforward(RotationGains.kS, RotationGains.kG, RotationGains.kV); 
+    private ArmFeedforward m_rotationFeedForwardExtended = new ArmFeedforward(RotationGains.kSExtended, RotationGains.kGExtended, RotationGains.kVExtended); 
     private SimpleMotorFeedforward m_extensionFeedForward = new SimpleMotorFeedforward(ExtensionGains.kS, ExtensionGains.kA, ExtensionGains.kA);
     private double angleSetpointRadians ;
     private boolean isOpenLoopRotation = true;
@@ -104,6 +105,7 @@ public class Arm extends SubsystemBase {
 
     public void rotate(double percent) {
         SmartDashboard.putNumber("RotateRotercent", percent);
+
         if (percent == 0.0){
             if (isOpenLoopRotation){
                 hold();
@@ -161,15 +163,20 @@ public class Arm extends SubsystemBase {
     }
 
     public void rotateClosedLoop(double velocity) {
-        if (getArmAngleRadians() > Units.degreesToRadians(95)){
-            velocity = 0;
-        }
+        if (m_angleEncoder.isConnected()){
         isOpenLoopRotation = false;
         SmartDashboard.putNumber("OUTPUT", velocity);
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
+        double extendedFeedForward = m_rotationFeedForwardExtended.calculate(getArmAngleRadians(),velocity);
+        double combinedFF = MathUtil.interpolate(feedForward,extendedFeedForward, getCurrentExtensionDistance()/FULL_EXTENSION_DISTANCE);
         SmartDashboard.putNumber("FeedForward", feedForward);
         SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(feedForward));
         m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
+        } 
+        else {
+            m_rotationMotor.set(ControlMode.PercentOutput, 0);
+          //  m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput());
+        }
     }
 
     public double getArmAngleRadians(){
@@ -221,6 +228,10 @@ public class Arm extends SubsystemBase {
     
     public double getCurrentExtensionDistance(){
         return m_extensionMotor.getSelectedSensorPosition()/PULSES_PER_METER_EXTENSION;
+    }
+
+    public boolean isArmEncoderConnected(){
+        return m_angleEncoder.isConnected();
     }
 }
 

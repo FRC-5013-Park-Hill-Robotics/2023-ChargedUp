@@ -16,6 +16,8 @@ import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -56,9 +59,11 @@ public class Drivetrain extends SubsystemBase {
 	// FIX We need to figure out initial possition.
 	private Pose2d m_pose = new Pose2d();
 	private SwerveDrivePoseEstimator m_PoseEstimator ;
-
+	private PIDController balancePID = new PIDController(0.014, 0, .008);
+	private double oldPitch;
 	// These are our modules. We initialize them in the constructor.
 	public SwerveModule[] mSwerveMods;
+	private double time;
 
 	private SwerveModuleState[] m_desiredStates;
 
@@ -256,37 +261,27 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	public void balance() {
-		double yaw, direction, angle, error, power;
-		angle = 0;
-		direction = 0;
-
-		yaw = Math.abs(getYawR2d().getDegrees() % 360);
-
-		if ((0 <= yaw && yaw < 45) || (315 <= yaw && yaw <= 360)) {
-			direction = 1;
-			angle = getRollR2d().getDegrees();
-		} else if (45 <= yaw && yaw < 135) {
-			direction = 1;
-			angle =getPitchR2d().getDegrees();
-		} else if (135 <= yaw && yaw < 225) {
-			direction = -1;
-			angle = getRollR2d().getDegrees();
-		} else if (225 <= yaw && yaw < 315) {
-			direction = -1;
-			angle = getPitchR2d().getDegrees();
+		double pitch = getPitchR2d().getDegrees();
+		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9) || (Math.signum(pitch) != Math.signum(oldPitch));
+		boolean waiting = time != 00 && time+0.1 > Timer.getFPGATimestamp();
+		if (waiting ){
+			drive(0,0,0);
+		} else if (better) {
+			//it is getting better so wait.
+			time = Timer.getFPGATimestamp();
+			drive(0,0,0);
+		} else {
+			//drive 
+			double xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);
+			drive(-xPower, 0, 0);
 		}
+		oldPitch = pitch;
+	}
 
-		if (angle > DrivetrainConstants.BALANCE_FULL_TILT_DEGREES) {
-			return;
-		}
-
-		error = Math.copySign(DrivetrainConstants.BALANCE_LEVEL_DEGREES + Math.abs(angle), angle);
-		power = Math.min(Math.abs(DrivetrainConstants.BALANCE_KP * error), DrivetrainConstants.BALANCE_MAX_POWER);
-		power = Math.copySign(power, error);
-
-		power *= direction;
-
-		drive(power, 0, 0);
+	public void resetBalance(){
+		balancePID.setSetpoint(0);
+		balancePID.setTolerance(2);
+		balancePID.reset();
 	}
 	public void drive(double x, double y, double rotation) {
 		ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

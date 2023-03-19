@@ -9,13 +9,14 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class ArmConstants {
-    public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(-40.9);
+    public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(-28);
     public static final double SPOOL_DIAMETER = Units.inchesToMeters(2.0);
     public static final double DISTANCE_PER_SPOOL_REVOLUTION_METERS = SPOOL_DIAMETER * Math.PI;
     public static final double SPOOL_ROTATIONS_PER_METER = 1/DISTANCE_PER_SPOOL_REVOLUTION_METERS;
     public static final double FALCON_ROTATIONS_PER_SPOOL = 5.0;
     public static final double PULSES_PER_FALCON_ROTATION = 2048;
     public static final double PULSES_PER_METER_EXTENSION = SPOOL_ROTATIONS_PER_METER * FALCON_ROTATIONS_PER_SPOOL * PULSES_PER_FALCON_ROTATION;
+    public static final double FULL_EXTENSION_DISTANCE = 0;
 
     public static final class ExtensionGains {
         public static final double kP = 30;
@@ -40,6 +41,11 @@ public class ArmConstants {
         public static final double kG = 0.95;
         public static final double kV = 2.8521;
         public static final double kA = 0.04607;
+
+        public static final double kSExtended = 0;
+        public static final double kGExtended = 0;
+        public static final double kVExtended = 0;
+        public static final double kAExtended = 0;
     }
 
     public static final class RotationConstraints{

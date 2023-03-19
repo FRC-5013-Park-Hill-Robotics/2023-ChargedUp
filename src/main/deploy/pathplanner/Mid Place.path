@@ -2,15 +2,15 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 1.7427337711818283,
-        "y": 0.45807177328640375
+        "x": 2.0036934024045996,
+        "y": 3.2996925780328428
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.742733771181828,
-        "y": 0.45807177328640375
+        "x": 3.003693402404596,
+        "y": 3.2996925780328428
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 90.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -24,15 +24,15 @@
     },
     {
       "anchorPoint": {
-        "x": 5.908323959505061,
-        "y": 0.45807177328640375
+        "x": 1.6993989859865855,
+        "y": 3.280674177006717
       },
       "prevControl": {
-        "x": 4.908323959505061,
-        "y": 0.45807177328640375
+        "x": 1.6993989859865855,
+        "y": 2.280674177006717
       },
       "nextControl": null,
-      "holonomicAngle": 0,
+      "holonomicAngle": -180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -45,5 +45,18 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.0,
+      "names": [
+        "Mid"
+      ]
+    },
+    {
+      "position": 1.0,
+      "names": [
+        "Drop Cone"
+      ]
+    }
+  ]
 }

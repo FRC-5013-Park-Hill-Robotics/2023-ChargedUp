@@ -35,6 +35,10 @@ public class RevThroughBoreEncoder {
         m_Inverted = inverted;
     }
 
+    public boolean isConnected() {
+        return (m_dutyCycleEncoder.isConnected());
+    }
+
     public Rotation2d getAngle(){
         double angle = m_dutyCycleEncoder.getDistance() % 360;
           
