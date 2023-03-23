@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ArmBrake;
 import frc.robot.commands.ArmControl;
 import frc.robot.commands.ArmExtend;
+import frc.robot.commands.ArmExtendAndRotate;
 import frc.robot.commands.ArmRotate;
 import frc.robot.commands.AutoBalanceCommand;
 import frc.robot.commands.GamepadDrive;
@@ -130,23 +131,35 @@ public class RobotContainer {
 		new Trigger(m_controller::getStartButton)
 			.onTrue(new InstantCommand(m_drivetrainSubsystem::resetModulesToAbsolute));
 
+		//new Trigger(m_operator_controller::getXButton)
+			//.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION)
+				//.andThen(new ArmRotate(m_arm, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS)));
+
 		//extemd and rotate to double substation
 		new Trigger(m_operator_controller::getXButton)
-			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION)
-				.andThen(new ArmRotate(m_arm, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS)));
+			.whileTrue(new ArmExtendAndRotate(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS)
+			.andThen(new ArmBrake(m_arm)));
 		
 		//extend and rotate to low node
 		new Trigger(m_operator_controller::getAButton)
-			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.LOW)
-				.andThen(new ArmRotate(m_arm, RotationSetpoints.LOW_RADIANS)));
+			.whileTrue(new ArmExtendAndRotate(m_arm, ExtensionSetpoints.LOW, RotationSetpoints.LOW_RADIANS)
+			.andThen(new ArmBrake(m_arm)));
 
 		// extend and rotate to mid node
 		new Trigger(m_operator_controller::getBButton)
-			.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.MID)
-				.andThen(new ArmRotate(m_arm, RotationSetpoints.MID_RADIANS)));
+			.whileTrue(new ArmExtendAndRotate(m_arm, ExtensionSetpoints.MID, RotationSetpoints.MID_RADIANS)
+			.andThen(new ArmBrake(m_arm)));
 
+		//extend and rotate to high node
 		new Trigger(m_operator_controller::getYButton)
-				.whileTrue(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold)));
+			.whileTrue(new ArmExtendAndRotate(m_arm, ExtensionSetpoints.HIGH, RotationSetpoints.HIGH_RADIANS)
+			.andThen(new ArmBrake(m_arm)));
+
+		new Trigger(m_operator_controller::getRightBumper)
+			.whileTrue(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold)));
+		
+		new Trigger(m_operator_controller::getLeftBumper)
+				.whileTrue(new ArmRotate(m_arm, Math.PI/2).andThen(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold))));
 
 		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube
