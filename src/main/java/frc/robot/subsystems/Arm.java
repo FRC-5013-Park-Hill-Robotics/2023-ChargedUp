@@ -77,8 +77,8 @@ public class Arm extends SubsystemBase {
         m_rotationMotor.setNeutralMode(NeutralMode.Brake);
         m_rotationMotor.setInverted(false);
         isOpenLoopRotation = false;
-
-  
+        
+        new Trigger(this::isExtensionCurrentSpike).onTrue(new InstantCommand(this::resetExtensionEncoder));
         SmartDashboard.putData("Arm Rotation PID Controller", m_rotationPIDController);
     }
 
@@ -218,7 +218,7 @@ public class Arm extends SubsystemBase {
     }
 
     public boolean isExtensionCurrentSpike(){
-        return m_extensionMotor.getStatorCurrent() > 30;
+        return m_extensionMotor.getStatorCurrent() > 65;
     }
 
     public void resetExtensionEncoder(){

@@ -177,7 +177,7 @@ public class PathPlannerCommandFactory {
         SequentialCommandGroup mid = new SequentialCommandGroup(new ArmRotate(container.getArm(), 0),
             new ArmExtend(container.getArm(), ExtensionSetpoints.MID),
             new ArmRotate(container.getArm(), RotationSetpoints.MID_RADIANS));
-        SequentialCommandGroup dropCone = new SequentialCommandGroup(new InstantCommand(container.getIntake()::pickUpCube),
+        SequentialCommandGroup dropCone = new SequentialCommandGroup(new RunCommand(container.getIntake()::pickUpCube).withTimeout(1),
             new ArmRotate(container.getArm(), RotationSetpoints.MID_RADIANS));
         eventMap.put("Mid", mid);
         eventMap.put("Drop Cone", dropCone);
