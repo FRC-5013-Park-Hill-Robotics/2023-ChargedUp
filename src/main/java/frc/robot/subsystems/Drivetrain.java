@@ -59,7 +59,9 @@ public class Drivetrain extends SubsystemBase {
 	// FIX We need to figure out initial possition.
 	private Pose2d m_pose = new Pose2d();
 	private SwerveDrivePoseEstimator m_PoseEstimator ;
-	private PIDController balancePID = new PIDController(0.014, 0, .008);
+	private final double balanceP = 0.014;
+	private final double balanceD = 0.008;
+	private PIDController balancePID = new PIDController(balanceP, 0, balanceD);
 	private double oldPitch;
 	// These are our modules. We initialize them in the constructor.
 	public SwerveModule[] mSwerveMods;
@@ -265,16 +267,20 @@ public class Drivetrain extends SubsystemBase {
 		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9) || (Math.signum(pitch) != Math.signum(oldPitch));
 		boolean waiting = time != 00 && time+0.1 > Timer.getFPGATimestamp();
 		if (waiting ){
-			drive(0,0,0);
+			balancePID.setP(0);
+			balancePID.setD(0);
 		} else if (better) {
 			//it is getting better so wait.
 			time = Timer.getFPGATimestamp();
-			drive(0,0,0);
+			balancePID.setP(0);
+			balancePID.setD(0);
 		} else {
 			//drive 
-			double xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);
-			drive(-xPower, 0, 0);
+			balancePID.setP(balanceP);
+			balancePID.setD(balanceD);
 		}
+		double xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);
+		drive(-xPower, 0, 0);
 		oldPitch = pitch;
 	}
 
@@ -290,6 +296,6 @@ public class Drivetrain extends SubsystemBase {
 				rotation * DrivetrainConstants.maxAngularVelocity,
 				getYawR2d());
 
-		drive(chassisSpeeds);
+		driveClosedLoop(chassisSpeeds);
 	}
 }
