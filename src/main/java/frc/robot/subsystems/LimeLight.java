@@ -50,12 +50,12 @@ public class LimeLight extends SubsystemBase {
 
   }
 
-  public double getHorizontalAngleOfError(){
+  public double getHorizontalAngleOfErrorDegrees(){
     //+1 is a fudge factor cor camera mounting
     return getTx().getDouble(0.0) + LimeLightConstants.HORIZONTAL_OFFSET;
   }
 
-  public double getVerticalAngleOfError(){
+  public double getVerticalAngleOfErrorDegrees(){
     //+1 is a fudge factor cor camera mounting
     return getTy().getDouble(0.0) + LimeLightConstants.VERTICAL_OFFSET;
   }
@@ -80,6 +80,9 @@ public class LimeLight extends SubsystemBase {
   public double getTargetAngleRadians() {
     return getTxAngleRadians()+m_robotContainer.getDrivetrain().getHeadingRadians();
   }
-
+  public boolean hasTarget(){
+    SmartDashboard.putNumber("tv; ", tv.getDouble(0));
+    return tv.getDouble(0) != 0;
+  }
 }
 
