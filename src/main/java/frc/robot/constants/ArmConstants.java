@@ -56,8 +56,8 @@ public class ArmConstants {
     public static final class ExtensionSetpoints {
         //
         public static final double LOW = 0;
-        public static final double MID = 0.3;
-        public static final double HIGH = 0.8;
+        public static final double MID = 0.28;
+        public static final double HIGH = 0.91;
         public static final double DOUBLE_SUBSTATION = 0.8;
 
 
@@ -68,7 +68,7 @@ public class ArmConstants {
         //in degrees initially, conv to rad
         public static final double LOW_RADIANS = Units.degreesToRadians(352);
         public static final double MID_RADIANS = Units.degreesToRadians(48);
-        public static final double HIGH_RADIANS = Units.degreesToRadians(46);
+        public static final double HIGH_RADIANS = Units.degreesToRadians(50);
         public static final double DOUBLE_SUBSTATION_RADIANS = Units.degreesToRadians(44);
         public static final double GROUND_RADIANS = Units.degreesToRadians(355);
     }

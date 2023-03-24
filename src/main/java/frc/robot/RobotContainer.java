@@ -131,6 +131,9 @@ public class RobotContainer {
 		new Trigger(m_controller::getStartButton)
 			.onTrue(new InstantCommand(m_drivetrainSubsystem::resetModulesToAbsolute));
 
+		//new Trigger(m_controller::getRightBumper)
+			//.whileTrue(new AlignToDoubleSubstation())
+
 		//new Trigger(m_operator_controller::getXButton)
 			//.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION)
 				//.andThen(new ArmRotate(m_arm, RotationSetpoints.DOUBLE_SUBSTATION_RADIANS)));

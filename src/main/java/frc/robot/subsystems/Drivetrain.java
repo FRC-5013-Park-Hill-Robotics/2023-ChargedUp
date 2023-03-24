@@ -184,6 +184,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
 	private void updatePoseEstimator() {
+		System.out.println("update pose estimator");
 		m_pose = m_PoseEstimator.update(Rotation2d.fromDegrees(m_pigeon.getYaw()),getModulePositions());
 		SmartDashboard.putNumber("Pose x", m_pose.getX());
 		SmartDashboard.putNumber("Pose y", m_pose.getY());

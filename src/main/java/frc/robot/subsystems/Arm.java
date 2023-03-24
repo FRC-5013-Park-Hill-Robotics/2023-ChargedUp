@@ -154,7 +154,7 @@ public class Arm extends SubsystemBase {
         isOpenLooExtension = false;
         double feedForward = m_extensionFeedForward.calculate(velocity);
         if (velocity < 0){
-            feedForward = feedForward - 2.14;
+            feedForward = feedForward - 2.65;
         }
         SmartDashboard.putNumber("ExVel", velocity);
         SmartDashboard.putNumber("ExFeedForward", feedForward);
