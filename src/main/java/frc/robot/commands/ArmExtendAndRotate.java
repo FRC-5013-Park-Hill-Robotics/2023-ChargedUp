@@ -13,7 +13,7 @@ public class ArmExtendAndRotate extends CommandBase {
   private double m_angleRadians;
   private double m_length;
   /** Creates a new ArmExtendAndRotate. */
-  public ArmExtendAndRotate(Arm arm, double angleRadians, double length) {
+  public ArmExtendAndRotate(Arm arm, double length, double angleRadians) {
     addRequirements(arm);
     m_arm = arm;
     m_angleRadians = angleRadians;
