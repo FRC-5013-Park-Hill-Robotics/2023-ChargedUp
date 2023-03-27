@@ -14,6 +14,8 @@ public class FieldTrajectoryConstants {
     public static final double fieldWidthMeters = 8.02;
     public static final double fieldWidthInches = 315.748;
 
+    public static final double fieldLengthMeters = 16.48;
+
     public static final double robotHalfDistanceMeters = 0.36195;
 
     public static final double blueChargingStationMiddleYMeters = 2.7494865;

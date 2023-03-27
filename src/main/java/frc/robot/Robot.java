@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PhotonVision;
 
 public class Robot extends TimedRobot {
@@ -39,6 +40,8 @@ public class Robot extends TimedRobot {
         if (pv!= null){
           pv.initialize();
         }
+        LimeLight ll = m_robotContainer.getLimelight();
+        ll.setAlliance(alliance);
       }
   }
   @Override

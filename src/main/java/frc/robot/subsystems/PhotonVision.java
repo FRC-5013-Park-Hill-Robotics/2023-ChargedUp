@@ -46,7 +46,7 @@ public class PhotonVision extends SubsystemBase{
     public PhotonVision(){
         super();
         try{
-            aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            aprilTagFieldLayout =  AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
         } catch (IOException e){
             System.out.println(e.toString());
         }
@@ -58,7 +58,7 @@ public class PhotonVision extends SubsystemBase{
         if(alliance  != Alliance.Invalid){
             if (aprilTagFieldLayout == null){
                 try{
-                    aprilTagFieldLayout = new AprilTagFieldLayout(AprilTagFields.k2023ChargedUp.m_resourceFile);
+                    aprilTagFieldLayout =  AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
                 } catch (IOException e){
                     System.out.println(e.toString());
                 }

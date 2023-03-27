@@ -16,6 +16,11 @@ import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,12 +40,14 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import frc.robot.SwerveModule;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.FieldTrajectoryConstants;
+import frc.robot.constants.DrivetrainConstants.ThetaGains;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
 
 
@@ -298,5 +305,38 @@ public class Drivetrain extends SubsystemBase {
 				getYawR2d());
 
 		driveClosedLoop(chassisSpeeds);
+	}
+	public void addVisionMeasurement(
+		Pose2d robotPose, double timestamp, boolean soft, double trustWorthiness) {
+	  if (soft) {
+		m_PoseEstimator.addVisionMeasurement(
+			robotPose, timestamp, DrivetrainConstants.visionMeasurementStdDevs.times(1.0 / trustWorthiness));
+	  } else {
+		m_PoseEstimator.resetPosition(
+			robotPose.getRotation(), getModulePositions(), robotPose);
+	  }
+	}
+
+	public Command doubleSubstation(){
+				// More complex path with holonomic rotation. Non-zero starting velocity of 2 m/s. Max velocity of 4 m/s and max accel of 3 m/s^2
+		PathPlannerTrajectory traj = PathPlanner.generatePath(
+    		new PathConstraints(2, 3), 
+    		new PathPoint(getPose().getTranslation(),getYawR2d(), getYawR2d()),
+			new PathPoint(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters - 1.2, FieldTrajectoryConstants.fieldWidthMeters - 0.6), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))
+ 		);
+
+		//FieldTrajectoryConstants.fieldLengthMeters - 1.2. FieldTrajectoryConstants.fieldWidthMeters - 0.6
+			return new PPSwerveControllerCommand(
+					 traj, 
+					 this::getPose, // Pose supplier
+					 this.m_kinematics, // SwerveDriveKinematics
+					 new PIDController(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD),
+					 new PIDController(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD),
+					 new PIDController(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD),		 this::setDesiredStates, // Module states consumer
+					 true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+					 this // Requires this drive subsystem
+			 );
+		 
+
 	}
 }

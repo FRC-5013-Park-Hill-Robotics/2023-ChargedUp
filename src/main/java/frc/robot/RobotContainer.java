@@ -33,11 +33,13 @@ import frc.robot.commands.GamepadDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PhotonVision;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
@@ -77,6 +79,7 @@ public class RobotContainer {
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
 	private PhotonVision m_photonVision;// = new PhotonVision();
 	private Intake m_intake = new Intake(m_arm);
+	private final LimeLight m_limelight = new LimeLight();
 	public static RobotContainer getInstance(){
 		return instance;
 	}
@@ -131,8 +134,14 @@ public class RobotContainer {
 		new Trigger(m_controller::getStartButton)
 			.onTrue(new InstantCommand(m_drivetrainSubsystem::resetModulesToAbsolute));
 
-		//new Trigger(m_controller::getRightBumper)
-			//.whileTrue(new AlignToDoubleSubstation())
+		new Trigger(m_controller::getLeftTriggerButton)
+			.whileTrue(new ProxyCommand(  m_drivetrainSubsystem::doubleSubstation ));
+
+		new Trigger(m_controller::getRightBumper)
+			.whileTrue(new InstantCommand(() -> m_limelight.setTrust(true)))
+			.onFalse(new InstantCommand(() -> m_limelight.setTrust(false)));
+			
+
 
 		//new Trigger(m_operator_controller::getXButton)
 			//.whileTrue(new ArmExtend(m_arm, ExtensionSetpoints.DOUBLE_SUBSTATION)
@@ -245,6 +254,10 @@ public class RobotContainer {
 
 	public Intake getIntake() {
 		return m_intake;
+	}
+
+	public LimeLight getLimelight(){
+		return m_limelight;
 	}
 /*
 	public StatusLED getStatusLED() {
