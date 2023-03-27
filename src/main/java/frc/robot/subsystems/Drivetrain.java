@@ -317,7 +317,9 @@ public class Drivetrain extends SubsystemBase {
 	  }
 	}
 
-	public Command doubleSubstation(Alliance alliance, Pose2d botpose){
+	public Command doubleSubstation(){
+		Alliance alliance = DriverStation.getAlliance();
+		Pose2d botpose = getPose();
 		RectanglePoseArea blueLeftField =
 		new RectanglePoseArea(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters), new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters-4.208));
 
