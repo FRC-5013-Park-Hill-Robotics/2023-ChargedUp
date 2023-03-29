@@ -171,7 +171,7 @@ public class RobotContainer {
 			.whileTrue(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold)));
 		
 		new Trigger(m_operator_controller::getLeftBumper)
-				.whileTrue(new ArmRotate(m_arm, Math.PI/2).andThen(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold))));
+				.whileTrue(new ArmExtendAndRotate(m_arm,0, Math.PI/2).andThen(new ArmBrake(m_arm).andThen(new InstantCommand(m_arm::hold))));
 
 		new Trigger(m_operator_controller::getLeftTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCube)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cube

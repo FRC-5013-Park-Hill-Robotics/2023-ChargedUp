@@ -36,13 +36,14 @@ public final class GlobalConstants {
         public static final int DROP_INTAKE_SOLENOID_CHANNEL = 1;
         public static final int RAISE_INTAKE_SOLENOID_CHANNEL = 0;
 		public static final double INTAKE_SPEED = 0.5;
+        public static final double CUBE_INTAKE_SPEED = 0.6;
         public static final int ROLLER_SERVO = 0;
 
-        public static final Rotation2d WRIST_OFFSET_DEGREES = Rotation2d.fromDegrees(-43);
-        public static final Rotation2d TARGET_WRIST_ANGLE = Rotation2d.fromDegrees(17);
+        public static final Rotation2d WRIST_OFFSET_DEGREES = Rotation2d.fromDegrees(-46);
+        public static final Rotation2d TARGET_WRIST_ANGLE = Rotation2d.fromDegrees(22);
         public static final Rotation2d WRIST_TOLERANCE = Rotation2d.fromDegrees(2);
 
-        public static final double kP = 1.1;
+        public static final double kP = 1.3;
         public static final double kI = 0;
         public static final double kD = 0.05;
         public static final double kS = 0.8;
