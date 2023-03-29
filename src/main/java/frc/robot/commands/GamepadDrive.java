@@ -39,7 +39,7 @@ public class GamepadDrive extends CommandBase {
 		double throttle = modifyAxis(m_gamepad.getRightTriggerAxis());
 
 		if (m_gamepad.getLeftBumper()){
-			throttle = throttle/2;
+			throttle = throttle/3;
 		}
 
 

@@ -6,10 +6,13 @@ package frc.robot.constants;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.falconSwerveLib.util.COTSFalconSwerveConstants;
 import frc.falconSwerveLib.util.CanPort;
@@ -176,5 +179,10 @@ public final class DrivetrainConstants {
     public static final double BACKWARDS_BALANCING_EXTRA_POWER_MULTIPLIER = 1.35;
     public static final double BALANCE_KP = 0.01;
     public static final double BALANCE_MAX_POWER = 0.4;
-
+    public static Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+    /**
+     * Trustworthiness of the vision system Measured in expected standard deviation (meters of
+     * position and degrees of rotation)
+     */
+    public static Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, 0.9);
 }

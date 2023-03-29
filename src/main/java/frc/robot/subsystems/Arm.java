@@ -154,7 +154,7 @@ public class Arm extends SubsystemBase {
         isOpenLooExtension = false;
         double feedForward = m_extensionFeedForward.calculate(velocity);
         if (velocity < 0){
-            feedForward = feedForward - 2.65;
+            //feedForward = feedForward - 2.65;
         }
         SmartDashboard.putNumber("ExVel", velocity);
         SmartDashboard.putNumber("ExFeedForward", feedForward);
@@ -169,9 +169,9 @@ public class Arm extends SubsystemBase {
         double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
         double extendedFeedForward = m_rotationFeedForwardExtended.calculate(getArmAngleRadians(),velocity);
         double combinedFF = MathUtil.interpolate(feedForward,extendedFeedForward, getCurrentExtensionDistance()/FULL_EXTENSION_DISTANCE);
-        SmartDashboard.putNumber("FeedForward", feedForward);
-        SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(feedForward));
-        m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(feedForward));
+        SmartDashboard.putNumber("FeedForward", combinedFF);
+        SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(combinedFF));
+        m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(combinedFF));
         } 
         else {
             m_rotationMotor.set(ControlMode.PercentOutput, 0);

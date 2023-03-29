@@ -25,7 +25,7 @@ def drawDecorations(image):
 # runPipeline() is called every frame by Limelight's backend.
 def runPipeline(image, llrobot):
     img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    cone_threshold = cv2.inRange(img_hsv, (10, 200, 110), (40, 255, 215))
+    cone_threshold = cv2.inRange(img_hsv, (10, 200, 40), (40, 255, 215))
     cube_threshold = cv2.inRange(img_hsv, (110, 120, 40), (150, 205, 190))
 
 

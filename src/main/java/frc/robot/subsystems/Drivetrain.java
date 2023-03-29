@@ -16,6 +16,11 @@ import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -35,13 +40,16 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import frc.robot.SwerveModule;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.constants.FieldTrajectoryConstants;
+import frc.robot.constants.DrivetrainConstants.ThetaGains;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
+import webblib.util.RectanglePoseArea;
 
 
 public class Drivetrain extends SubsystemBase {
@@ -184,7 +192,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
 	private void updatePoseEstimator() {
-		System.out.println("update pose estimator");
 		m_pose = m_PoseEstimator.update(Rotation2d.fromDegrees(m_pigeon.getYaw()),getModulePositions());
 		SmartDashboard.putNumber("Pose x", m_pose.getX());
 		SmartDashboard.putNumber("Pose y", m_pose.getY());
@@ -298,5 +305,75 @@ public class Drivetrain extends SubsystemBase {
 				getYawR2d());
 
 		driveClosedLoop(chassisSpeeds);
+	}
+	public void addVisionMeasurement(
+		Pose2d robotPose, double timestamp, boolean soft, double trustWorthiness) {
+	  if (soft) {
+		m_PoseEstimator.addVisionMeasurement(
+			robotPose, timestamp, DrivetrainConstants.visionMeasurementStdDevs.times(1.0 / trustWorthiness));
+	  } else {
+		m_PoseEstimator.resetPosition(
+			robotPose.getRotation(), getModulePositions(), robotPose);
+	  }
+	}
+
+	public Command doubleSubstation(){
+		Alliance alliance = DriverStation.getAlliance();
+		Pose2d botpose = getPose();
+		RectanglePoseArea blueLeftField =
+		new RectanglePoseArea(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters), new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters-4.208));
+
+		RectanglePoseArea blueRightField =
+		new RectanglePoseArea(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters-4.208), new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, FieldTrajectoryConstants.fieldWidthMeters-8.416));
+
+		RectanglePoseArea redLeftField =
+		new RectanglePoseArea(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, 0), new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, 4.208));
+
+		RectanglePoseArea redRightField =
+		new RectanglePoseArea(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, 4.208), new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, 8.02));
+
+		Translation2d destination;
+
+		if (alliance == Alliance.Blue) {
+			if (blueLeftField.isPoseWithinArea(botpose)) {
+				//destination = new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, );
+			}
+			else if (blueRightField.isPoseWithinArea(botpose)) {
+				//destination = new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, );
+			}
+		}
+
+		else if (alliance == Alliance.Red) {
+			if (redLeftField.isPoseWithinArea(botpose)) {
+				//destination = new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, );
+			}
+			else if (redRightField.isPoseWithinArea(botpose)) {
+				//destination = new Translation2d(FieldTrajectoryConstants.fieldLengthMeters, );
+			}
+			
+		}
+
+		PathPlannerTrajectory traj = PathPlanner.generatePath(
+    		new PathConstraints(2, 3), 
+    		new PathPoint(getPose().getTranslation(),getYawR2d(), getYawR2d()),
+			new PathPoint(new Translation2d(FieldTrajectoryConstants.fieldLengthMeters - 1.2, FieldTrajectoryConstants.fieldWidthMeters - 0.6), Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(0))
+ 		);
+
+
+
+		System.out.println("start at pose" + getPose().getTranslation());
+		//FieldTrajectoryConstants.fieldLengthMeters - 1.2. FieldTrajectoryConstants.fieldWidthMeters - 0.6
+			return new PPSwerveControllerCommand(
+					 traj, 
+					 this::getPose, // Pose supplier
+					 this.m_kinematics, // SwerveDriveKinematics
+					 new PIDController(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD),
+					 new PIDController(TranslationGains.kP, TranslationGains.kI, TranslationGains.kD),
+					 new PIDController(ThetaGains.kP, ThetaGains.kI, ThetaGains.kD),		 this::setDesiredStates, // Module states consumer
+					 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+					 this // Requires this drive subsystem
+			 );
+		 
+
 	}
 }
