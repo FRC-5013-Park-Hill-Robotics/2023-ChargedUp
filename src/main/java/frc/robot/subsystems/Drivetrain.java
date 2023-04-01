@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -80,6 +81,8 @@ public class Drivetrain extends SubsystemBase {
 	private SimpleMotorFeedforward m_feedForward = new SimpleMotorFeedforward(TranslationGains.kS, TranslationGains.kV,
 			TranslationGains.kA);
 
+	Field2d m_field;
+
 	public Drivetrain() {
 			
 		zeroGyroscope();
@@ -98,7 +101,8 @@ public class Drivetrain extends SubsystemBase {
 		new Pose2d(),
 		VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
 		VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
+		m_field = new Field2d();
+		SmartDashboard.putData(m_field);
 	}
 
 	/**
@@ -107,6 +111,7 @@ public class Drivetrain extends SubsystemBase {
 	 */
 	public void zeroGyroscope() {
 		m_pigeon.setYaw(0.0);
+		
 
 	}
 
@@ -272,12 +277,15 @@ public class Drivetrain extends SubsystemBase {
 
 	public void balance() {
 		double pitch = getPitchR2d().getDegrees();
-		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9) || (Math.signum(pitch) != Math.signum(oldPitch));
+		System.out.println("pitch=" +pitch);
+		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9);
 		boolean waiting = time != 00 && time+0.1 > Timer.getFPGATimestamp();
 		if (waiting ){
+			System.out.println("Waiting");
 			balancePID.setP(0);
 			balancePID.setD(0);
 		} else if (better) {
+			System.out.println("Better");
 			//it is getting better so wait.
 			time = Timer.getFPGATimestamp();
 			balancePID.setP(0);
@@ -287,7 +295,13 @@ public class Drivetrain extends SubsystemBase {
 			balancePID.setP(balanceP);
 			balancePID.setD(balanceD);
 		}
-		double xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);
+		double xPower;
+		if (Math.abs(pitch) <2.5){
+			 xPower = 0;
+		} else {
+			xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);
+			
+		}
 		drive(-xPower, 0, 0);
 		oldPitch = pitch;
 	}
@@ -360,10 +374,15 @@ public class Drivetrain extends SubsystemBase {
  		);
 
 
+	
+	 
+		 // Push the trajectory to Field2d.
+		 m_field.getObject("traj").setTrajectory(traj);
+
 
 		System.out.println("start at pose" + getPose().getTranslation());
 		//FieldTrajectoryConstants.fieldLengthMeters - 1.2. FieldTrajectoryConstants.fieldWidthMeters - 0.6
-			return new PPSwerveControllerCommand(
+		PPSwerveControllerCommand command =  new PPSwerveControllerCommand(
 					 traj, 
 					 this::getPose, // Pose supplier
 					 this.m_kinematics, // SwerveDriveKinematics
@@ -373,6 +392,11 @@ public class Drivetrain extends SubsystemBase {
 					 false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
 					 this // Requires this drive subsystem
 			 );
+
+			 command.setLoggingCallbacks(null, m_field::setRobotPose, null, null);
+
+			 return command;
+
 		 
 
 	}

@@ -141,6 +141,7 @@ public class RobotContainer {
 			.whileTrue(new InstantCommand(() -> m_limelight.setTrust(true)))
 			.onFalse(new InstantCommand(() -> m_limelight.setTrust(false)));
 			
+		
 
 
 		//new Trigger(m_operator_controller::getXButton)
@@ -179,10 +180,11 @@ public class RobotContainer {
 		new Trigger(m_operator_controller::getRightTriggerButton).whileTrue(new InstantCommand(m_intake::pickUpCone)).onFalse(new InstantCommand(m_intake::stop));
 		//spin intake, cone
 			
-	
+		new Trigger(m_operator_controller::getDPadUp).onTrue(PathPlannerCommandFactory.placeConeHigh(m_arm, m_intake)) ;
 
 	}
 
+	
 	/**
 	 * Use this to pass the autonomous command to the main {@link Robot} class.
 	 *
