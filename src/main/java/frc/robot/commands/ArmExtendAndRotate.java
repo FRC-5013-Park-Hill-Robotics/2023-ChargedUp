@@ -12,6 +12,8 @@ public class ArmExtendAndRotate extends CommandBase {
   private Arm m_arm;
   private double m_angleRadians;
   private double m_length;
+  private boolean hasExtended = false;
+  private boolean hasRotated = false;
   /** Creates a new ArmExtendAndRotate. */
   public ArmExtendAndRotate(Arm arm, double length, double angleRadians) {
     addRequirements(arm);
@@ -24,6 +26,8 @@ public class ArmExtendAndRotate extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    hasExtended = false;
+    hasRotated = false;
     m_arm.getRotationPIDController().reset();
     m_arm.getExtensionPIDController().reset();
   }
@@ -33,10 +37,13 @@ public class ArmExtendAndRotate extends CommandBase {
   public void execute() {
     PIDController extensPidController = m_arm.getExtensionPIDController();
     extensPidController.setSetpoint(m_length);
-    m_arm.extendClosedLoop(extensPidController.calculate(m_arm.getCurrentExtensionDistance()));
+    double extend = extensPidController.calculate(m_arm.getCurrentExtensionDistance());
+    m_arm.extendClosedLoop( extend );
+
     PIDController rotationController = m_arm.getRotationPIDController();
     rotationController.setSetpoint(m_angleRadians);
-    m_arm.rotateClosedLoop(rotationController.calculate(m_arm.getArmAngleRadians()));
+    double rotate = rotationController.calculate(m_arm.getArmAngleRadians());
+    m_arm.rotateClosedLoop(rotate);
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +56,13 @@ public class ArmExtendAndRotate extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_arm.getRotationPIDController().atSetpoint() && m_arm.getExtensionPIDController().atSetpoint();
+    if (m_arm.getRotationPIDController().atSetpoint()) {
+      hasRotated =true;
+    } 
+
+    if (m_arm.getExtensionPIDController().atSetpoint()) {
+      hasExtended = true;
+    }
+    return hasRotated && hasExtended;
   }
 }

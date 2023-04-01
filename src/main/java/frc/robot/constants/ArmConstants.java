@@ -19,7 +19,7 @@ public class ArmConstants {
     public static final double FULL_EXTENSION_DISTANCE = 0.966;
 
     public static final class ExtensionGains {
-        public static final double kP = 30;
+        public static final double kP = 35;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kF = 0;
@@ -34,11 +34,11 @@ public class ArmConstants {
         //public static final double kP = 8.0735;
         public static final double kP = 2.9;
         public static final double kI = 0;
-        public static final double kD = 0.90318; //1.7543;
+        public static final double kD = 0.50318; //1.7543;
         public static final double kF = 0;
         public static final double kS = 0.1181;
-        //public static final double kG = 0.46137;  
-        public static final double kG = 0.32446;
+        //public static final double kG = 0.32446;
+        public static final double kG = 0.4;
         public static final double kV = 3.4;
         public static final double kA = 0.044465;
 
@@ -55,7 +55,7 @@ public class ArmConstants {
 
     public static final class ExtensionSetpoints {
         //
-        public static final double LOW = 0;
+        public static final double LOW = 0.05;
         public static final double MID = 0.3;
         public static final double HIGH = 0.84;
         public static final double DOUBLE_SUBSTATION = 0.2;
@@ -66,11 +66,12 @@ public class ArmConstants {
 
     public static final class RotationSetpoints {
         //in degrees initially, conv to rad
-        public static final double LOW_RADIANS = Units.degreesToRadians(347);
+        public static final double LOW_RADIANS = Units.degreesToRadians(339.1);
         public static final double MID_RADIANS = Units.degreesToRadians(53);
         public static final double HIGH_RADIANS = Units.degreesToRadians(53);
         public static final double DOUBLE_SUBSTATION_RADIANS = Units.degreesToRadians(69.5);
-        public static final double GROUND_RADIANS = Units.degreesToRadians(355);
+
+        public static final double GROUND_CONE_RADIANS = Units.degreesToRadians(342.1);
     }
     //degrees to radians
 

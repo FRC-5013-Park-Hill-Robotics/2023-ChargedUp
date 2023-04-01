@@ -164,14 +164,14 @@ public class Arm extends SubsystemBase {
 
     public void rotateClosedLoop(double velocity) {
         if (m_angleEncoder.isConnected()){
-        isOpenLoopRotation = false;
-        SmartDashboard.putNumber("OUTPUT", velocity);
-        double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
-        double extendedFeedForward = m_rotationFeedForwardExtended.calculate(getArmAngleRadians(),velocity);
-        double combinedFF = MathUtil.interpolate(feedForward,extendedFeedForward, getCurrentExtensionDistance()/FULL_EXTENSION_DISTANCE);
-        SmartDashboard.putNumber("FeedForward", combinedFF);
-        SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(combinedFF));
-        m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(combinedFF));
+            isOpenLoopRotation = false;
+            SmartDashboard.putNumber("OUTPUT", velocity);
+            double feedForward = m_rotationFeedForward.calculate(getArmAngleRadians(),velocity);
+            double extendedFeedForward = m_rotationFeedForwardExtended.calculate(getArmAngleRadians(),velocity);
+            double combinedFF = MathUtil.interpolate(feedForward,extendedFeedForward, getCurrentExtensionDistance()/FULL_EXTENSION_DISTANCE);
+            SmartDashboard.putNumber("FeedForward", combinedFF);
+            SmartDashboard.putNumber("Voltage",RobotContainer.voltageToPercentOutput(combinedFF));
+            m_rotationMotor.set(ControlMode.PercentOutput, RobotContainer.voltageToPercentOutput(combinedFF));
         } 
         else {
             m_rotationMotor.set(ControlMode.PercentOutput, 0);
