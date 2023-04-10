@@ -208,6 +208,7 @@ public class PathPlannerCommandFactory {
 
     private static Command createBumperHigh(RobotContainer container) {
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("BumperHigh", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
+        PathPlannerTrajectory path2 = PathPlanner.loadPath("BumperHighLeg2", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
         HashMap<String, Command> eventMap = RobotContainer.getEventMap();
        // eventMap.put("High", placeConeHigh(container.getArm(), container.getIntake()));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -216,13 +217,14 @@ public class PathPlannerCommandFactory {
         eventMap.put("Cone Intake", new RunCommand(container.getIntake()::pickUpCone));
 
         Command fullAuto = RobotContainer.getSwerveAutoBuilder().fullAuto(pathGroup);
+        Command leg2 = RobotContainer.getSwerveAutoBuilder().followPath(path2);
+
         return placeConeHigh(container.getArm(), container.getIntake())
         .andThen(fullAuto)
         .andThen(new WaitCommand(0.5))
         .andThen(container.getIntake()::stop)
-        .andThen((new ArmExtendAndRotate(container.getArm(),0, Math.PI/2)
-        .andThen(new ArmBrake(container.getArm())
-        .andThen(new InstantCommand(container.getArm()::hold)))));
+        .andThen(new ArmExtendAndRotate(container.getArm(),0, Math.PI/2)
+        .alongWith(leg2));
     }
 
     public static Command resetDrive(Drivetrain drive){
@@ -231,6 +233,7 @@ public class PathPlannerCommandFactory {
 
     private static Command createBarrierHigh(RobotContainer container) {
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("BarrierHigh", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
+        PathPlannerTrajectory path2 = PathPlanner.loadPath("BarrierHighLeg2", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
         HashMap<String, Command> eventMap = RobotContainer.getEventMap();
        // eventMap.put("High", placeConeHigh(container.getArm(), container.getIntake()));
         //eventMap.put("intakeDown", new IntakeDown());
@@ -239,14 +242,14 @@ public class PathPlannerCommandFactory {
         eventMap.put("Cone Intake", new RunCommand(container.getIntake()::pickUpCone));
 
         Command fullAuto = RobotContainer.getSwerveAutoBuilder().fullAuto(pathGroup);
+        Command leg2 = RobotContainer.getSwerveAutoBuilder().followPath(path2);
         //Command leg2 = RobotContainer.getSwerveAutoBuilder().fullAuto(trajectory2HAB);
         return placeConeHigh(container.getArm(), container.getIntake())
             .andThen(fullAuto)
             .andThen(new WaitCommand(0.5))
             .andThen(container.getIntake()::stop)
-            .andThen((new ArmExtendAndRotate(container.getArm(),0, Math.PI/2)
-            .andThen(new ArmBrake(container.getArm())
-            .andThen(new InstantCommand(container.getArm()::hold)))));
+            .andThen(new ArmExtendAndRotate(container.getArm(),0, Math.PI/2)
+            .alongWith(leg2));
 
         
     }
@@ -269,7 +272,7 @@ public class PathPlannerCommandFactory {
     }
 
     private static Command createMiddleHighEngage(RobotContainer container) {
-        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("MiddleHighEngage", new PathConstraints(MAX_AUTO_VELOCITY_METERS_PER_SECOND, MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
+        List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("MiddleHighEngage", new PathConstraints(0.8 * MAX_AUTO_VELOCITY_METERS_PER_SECOND, 0.8*MAX_AUTO_ACCELERATION_METERS_PER_SECOND));
         HashMap<String, Command> eventMap = RobotContainer.getEventMap();
        // eventMap.put("High", placeConeHigh(container.getArm(), container.getIntake()));
         //eventMap.put("intakeDown", new IntakeDown());
