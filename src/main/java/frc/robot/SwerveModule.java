@@ -4,12 +4,13 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
+import edu.wpi.first.wpilibj.Timer;
 import frc.falconSwerveLib.math.Conversions;
 import frc.falconSwerveLib.util.CTREModuleState;
 import frc.falconSwerveLib.util.SwerveModuleConstants;
 import frc.robot.constants.DrivetrainConstants;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -125,6 +126,16 @@ public class SwerveModule {
     private void configAngleEncoder(){        
         angleEncoder.configFactoryDefault();
         angleEncoder.configAllSettings(Robot.ctreConfigs.swerveCanCoderConfig);
+        //Try reading encoder for up to 2 seconds so it won't start zero unti endoer is up.
+        double time = Timer.getFPGATimestamp();
+        boolean success = false;
+        boolean timeout = false;
+        double angle = 0;
+        do {
+            angle = Math.toRadians(angleEncoder.getPosition());
+            success = angleEncoder.getLastError() == ErrorCode.OK;
+            timeout = Timer.getFPGATimestamp() - time > 2;
+        } while (!success && !timeout);
     }
 
     private void configAngleMotor(){

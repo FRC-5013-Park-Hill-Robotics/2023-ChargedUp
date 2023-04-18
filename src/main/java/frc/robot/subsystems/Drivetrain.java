@@ -278,8 +278,8 @@ public class Drivetrain extends SubsystemBase {
 	public void balance() {
 		double pitch = getPitchR2d().getDegrees();
 		System.out.println("pitch=" +pitch);
-		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 9);
-		boolean waiting = time != 00 && time+0.1 > Timer.getFPGATimestamp();
+		boolean better =  (Math.abs(pitch) < Math.abs(oldPitch)  && Math.abs(pitch) < 12);
+		boolean waiting = time != 00 && time+0.25 > Timer.getFPGATimestamp();
 		if (waiting ){
 			System.out.println("Waiting");
 			balancePID.setP(0);
@@ -296,7 +296,7 @@ public class Drivetrain extends SubsystemBase {
 			balancePID.setD(balanceD);
 		}
 		double xPower;
-		if (Math.abs(pitch) <2.5){
+		if (Math.abs(pitch) <2){
 			 xPower = 0;
 		} else {
 			xPower = MathUtil.clamp(balancePID.calculate(pitch), -0.15, 0.15);

@@ -192,7 +192,8 @@ public class Arm extends SubsystemBase {
     }
 
     public void hold(){
-        rotateClosedLoop(0);
+    //    rotateClosedLoop(0);
+        m_rotationMotor.set(ControlMode.PercentOutput,0);
     }
 
     public void holdExtension(){

@@ -36,7 +36,7 @@ public class ArmControl extends CommandBase {
   public void execute() {
     double rotatePercent = -modifyAxis(m_gamepad.getLeftY())/2;
     //rotatePercent = rotatePercent * (1-kGPercent) + kGPercent;
-    m_arm.rotate(rotatePercent);
+   // m_arm.rotate(rotatePercent);
     SmartDashboard.putNumber("LeftY", m_gamepad.getLeftY());
     SmartDashboard.putNumber("RightY", m_gamepad.getRightY());
     double extendPercent = modifyAxis(m_gamepad.getRightY())/2;
