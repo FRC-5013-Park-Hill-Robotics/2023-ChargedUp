@@ -5,6 +5,8 @@
 package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -56,6 +58,9 @@ public class FieldTrajectoryConstants {
 
     }
 
+    static public Pose2d getDoubleSubstationPose(){
+        return new Pose2d(new Translation2d(fieldLengthMeters - 1.2, fieldWidthMeters - 0.6), Rotation2d.fromDegrees(0));
+    }
     //public static Pose2d getPlacement() {
         
     //}
