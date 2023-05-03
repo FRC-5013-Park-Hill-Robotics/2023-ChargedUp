@@ -104,9 +104,9 @@ public final class DrivetrainConstants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed =4.968; //TODO: This must be tuned to specific robot
+    public static final double maxSpeed =4.968; 
     /** Radians per Second */
-    public static final double maxAngularVelocity = 12.01; //TODO: This must be tuned to specific robot
+    public static final double maxAngularVelocity = 12.01; 
 
     /* Neutral Modes */
     public static final NeutralMode angleNeutralMode = NeutralMode.Coast;
