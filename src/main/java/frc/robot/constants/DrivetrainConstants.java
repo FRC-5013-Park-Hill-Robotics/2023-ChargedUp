@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import frc.falconSwerveLib.util.COTSFalconSwerveConstants;
 import frc.falconSwerveLib.util.CanPort;
 import frc.falconSwerveLib.util.SwerveModuleConstants;
