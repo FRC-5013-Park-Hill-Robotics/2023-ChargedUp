@@ -232,5 +232,6 @@ public class Arm extends SubsystemBase {
     public boolean isArmEncoderConnected(){
         return m_angleEncoder.isConnected();
     }
+    
 }
 
