@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LogitechController;
 import frc.robot.constants.GlobalConstants.ControllerConstants;
@@ -54,6 +56,8 @@ public class GamepadDrive extends CommandBase {
 				Drivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)), getRotationRadiansPerSecond(),
 				m_drivetrain.getYawR2d()));
 
+		SmartDashboard.putNumber("Drive Rotation", getRotationRadiansPerSecond());
+		
 		/*
 		 * m_drivetrain.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
 		 * getXTranslationMetersPerSecond(),
