@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AllignOnGamePiece;
 import frc.robot.commands.ArmBrake;
 import frc.robot.commands.ArmControl;
 import frc.robot.commands.ArmExtendAndRotate;
@@ -133,8 +134,10 @@ public class RobotContainer {
 
 	/*/	new Trigger(m_controller::getLeftTriggerButton)
 			.whileTrue(new ProxyCommand(  m_drivetrainSubsystem::doubleSubstation ));*/
+
+			//the turn to gamepiece
 		new Trigger(m_controller::getLeftTriggerButton)
-			.whileTrue(new DriveToPosePID(m_drivetrainSubsystem, FieldTrajectoryConstants::getDoubleSubstationPose));
+			.whileTrue(new AllignOnGamePiece(m_drivetrainSubsystem, m_limelight));
 
 		new Trigger(m_controller::getRightBumper)
 			.whileTrue(new InstantCommand(() -> m_limelight.setTrust(true)))
