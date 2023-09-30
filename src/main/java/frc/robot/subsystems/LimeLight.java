@@ -19,11 +19,11 @@ public class LimeLight extends SubsystemBase {
   /** Creates a new LimeLight. */
   public static final RectanglePoseArea field =
   new RectanglePoseArea(new Translation2d(0.0, 0.0), new Translation2d(16.54, 8.02));
-  private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  private NetworkTableEntry tx = table.getEntry("tx");
-  private NetworkTableEntry ty = table.getEntry("ty");
-  private NetworkTableEntry ta = table.getEntry("ta");
-  private NetworkTableEntry tv = table.getEntry("tv");
+  private NetworkTable table;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  private NetworkTableEntry tv;
   private RobotContainer m_robotContainer;
   Alliance alliance;
   private Boolean enable = true;
@@ -31,15 +31,15 @@ public class LimeLight extends SubsystemBase {
   private int fieldError = 0;
   private int distanceError = 0;
   private Pose2d botpose;
-  public LimeLight() {
+  public LimeLight(String name) {
     /**
      * tx - Horizontal Offset
      * ty - Vertical Offset 
      * ta - Area of target 
      * tv - Target Visible
      */
-
     
+    this.table = NetworkTableInstance.getDefault().getTable(name);
     this.tx = table.getEntry("tx");
     this.ty = table.getEntry("ty");
     this.ta = table.getEntry("ta");

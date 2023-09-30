@@ -36,6 +36,7 @@ import frc.robot.commands.DriveToPosePID;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.GamepieceLimelight;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.PhotonVision;
@@ -85,7 +86,11 @@ public class RobotContainer {
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
 	private PhotonVision m_photonVision;// = new PhotonVision();
 	private Intake m_intake = new Intake(m_arm);
-	private final LimeLight m_limelight = new LimeLight();
+
+	private final LimeLight m_FrontLimelight = new LimeLight("Front");
+	private final LimeLight m_BackLimelight = new LimeLight("Back");
+	private final GamepieceLimelight m_GamepieceLimelight = new GamepieceLimelight("Gamepiece");
+
 	public static RobotContainer getInstance(){
 		return instance;
 	}
@@ -146,8 +151,8 @@ public class RobotContainer {
 			.whileTrue(new DriveToPosePID(m_drivetrainSubsystem, FieldTrajectoryConstants::getDoubleSubstationPose));
 
 		new Trigger(m_controller::getRightBumper)
-			.whileTrue(new InstantCommand(() -> m_limelight.setTrust(true)))
-			.onFalse(new InstantCommand(() -> m_limelight.setTrust(false)));
+			.whileTrue(new InstantCommand(() -> m_FrontLimelight.setTrust(true)))
+			.onFalse(new InstantCommand(() -> m_FrontLimelight.setTrust(false)));
 			
 		
 
@@ -266,8 +271,12 @@ public class RobotContainer {
 		return m_intake;
 	}
 
-	public LimeLight getLimelight(){
-		return m_limelight;
+	public LimeLight getFrontLimelight() {
+		return m_FrontLimelight;
+	}
+
+	public LimeLight getBackLimelight() {
+		return m_BackLimelight;
 	}
 /*
 	public StatusLED getStatusLED() {
