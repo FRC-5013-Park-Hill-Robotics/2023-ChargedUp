@@ -4,20 +4,14 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.GlobalConstants.LEDConstants;
 import frc.robot.RobotContainer;
-import frc.robot.trobot5013lib.led.AlternatingColorPattern;
 import frc.robot.trobot5013lib.led.BlinkingPattern;
-import frc.robot.trobot5013lib.led.ChaosPattern;
 import frc.robot.trobot5013lib.led.ChasePattern;
 import frc.robot.trobot5013lib.led.IntensityPattern;
 import frc.robot.trobot5013lib.led.RainbowPattern;
-import frc.robot.trobot5013lib.led.ScannerPattern;
 import frc.robot.trobot5013lib.led.SolidColorPattern;
-import frc.robot.trobot5013lib.led.TrobotAddressableLED;
 import frc.robot.trobot5013lib.led.TrobotAddressableLEDPattern;
 
 public class StatusLED extends SubsystemBase {

@@ -4,16 +4,13 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
 import static frc.robot.constants.DrivetrainConstants.PIGEON_ID;
 
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonPoseEstimator;
-
-import static frc.robot.constants.DrivetrainConstants.MAX_VOLTAGE;
-
-
 
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.pathplanner.lib.PathConstraints;
@@ -22,6 +19,8 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -34,22 +33,17 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.VecBuilder;
 import frc.robot.SwerveModule;
 import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.FieldTrajectoryConstants;
 import frc.robot.constants.DrivetrainConstants.ThetaGains;
 import frc.robot.constants.DrivetrainConstants.TranslationGains;
+import frc.robot.constants.FieldTrajectoryConstants;
 import webblib.util.RectanglePoseArea;
 
 

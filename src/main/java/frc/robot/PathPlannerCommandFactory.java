@@ -5,7 +5,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,41 +12,26 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.constants.ArmConstants;
-import frc.robot.constants.DrivetrainConstants;
-import frc.robot.constants.ArmConstants.ExtensionSetpoints;
-import frc.robot.constants.ArmConstants.RotationSetpoints;
-//import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.constants.DrivetrainConstants.ThetaGains;
-import frc.robot.constants.DrivetrainConstants.TranslationGains;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.trobot5013lib.command.TrajectoryLogging;
-import frc.robot.AutonomousCommandFactory;
-import frc.robot.RobotContainer;
-import frc.robot.commands.ArmBrake;
 import frc.robot.commands.ArmExtend;
 import frc.robot.commands.ArmExtendAndRotate;
 import frc.robot.commands.ArmRotate;
 import frc.robot.commands.AutoBalanceCommand;
-import frc.robot.Robot;
+import frc.robot.constants.ArmConstants;
+import frc.robot.constants.ArmConstants.ExtensionSetpoints;
+import frc.robot.constants.ArmConstants.RotationSetpoints;
+import frc.robot.constants.DrivetrainConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 
 /** Add your docs here. */
 public class PathPlannerCommandFactory {

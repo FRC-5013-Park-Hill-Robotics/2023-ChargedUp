@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import static frc.robot.constants.DrivetrainConstants.maxAngularVelocity;
+
 import java.util.function.Supplier;
+
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -8,13 +11,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.constants.DrivetrainConstants;
+import frc.robot.constants.DrivetrainConstants.ThetaGains;
+import frc.robot.constants.DrivetrainConstants.TranslationGains;
 import frc.robot.subsystems.Drivetrain;
-import static frc.robot.constants.DrivetrainConstants.*;
 
 
 /**

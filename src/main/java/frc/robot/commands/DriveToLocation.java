@@ -11,7 +11,6 @@ import frc.robot.Grid;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.constants.FieldTrajectoryConstants;
 import frc.robot.constants.NodeConstants;
 
 public class DriveToLocation extends CommandBase {
