@@ -77,7 +77,9 @@ public class RobotContainer {
 	private PneumaticsControlModule m_pneumaticsHub = new PneumaticsControlModule(PNEUMATICS_HUB);
 	private PhotonVision m_photonVision;// = new PhotonVision();
 	private Intake m_intake = new Intake(m_arm);
-	private final LimeLight m_limelight = new LimeLight();
+	private final LimeLight m_Backlimelight = new LimeLight("Back", true);
+	private final LimeLight m_FrontLimeLight = new LimeLight("Front", true);
+	private final LimeLight m_GamepieceLimeLight = new LimeLight("Limelight", false);
 	public static RobotContainer getInstance(){
 		return instance;
 	}
@@ -137,11 +139,11 @@ public class RobotContainer {
 
 			//the turn to gamepiece
 		new Trigger(m_controller::getLeftTriggerButton)
-			.whileTrue(new AllignOnGamePiece(m_drivetrainSubsystem, m_limelight));
+			.whileTrue(new AllignOnGamePiece(m_drivetrainSubsystem, m_GamepieceLimeLight));
 
 		new Trigger(m_controller::getRightBumper)
-			.whileTrue(new InstantCommand(() -> m_limelight.setTrust(true)))
-			.onFalse(new InstantCommand(() -> m_limelight.setTrust(false)));
+			.whileTrue(new InstantCommand(() -> m_FrontLimeLight.setTrust(true)))
+			.onFalse(new InstantCommand(() -> m_FrontLimeLight.setTrust(false)));
 			
 		
 
@@ -260,9 +262,18 @@ public class RobotContainer {
 		return m_intake;
 	}
 
-	public LimeLight getLimelight(){
-		return m_limelight;
+	public LimeLight getFrontLimelight(){
+		return m_FrontLimeLight;
 	}
+
+	public LimeLight getBackLimelight(){
+		return m_Backlimelight;
+	}
+
+	public LimeLight getGamepieceLimelight(){
+		return m_GamepieceLimeLight;
+	}
+
 /*
 	public StatusLED getStatusLED() {
 		return m_StatusLED;
