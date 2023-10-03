@@ -165,7 +165,7 @@ public final class DrivetrainConstants {
     // Driving the bot gains used by PIDControllers
     public static final class TranslationGains {
        // public static final double kP = 2.2956;
-        public static final double kP = 0.15;
+        public static final double kP = 0.11;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kA = 0.16089;

@@ -9,7 +9,7 @@ import edu.wpi.first.math.util.Units;
 
 /** Add your docs here. */
 public class ArmConstants {
-    public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(205.2);
+    public static final Rotation2d ARM_OFFSET_DEGREES = Rotation2d.fromDegrees(-153.4);
     public static final double SPOOL_DIAMETER = Units.inchesToMeters(2.0);
     public static final double DISTANCE_PER_SPOOL_REVOLUTION_METERS = SPOOL_DIAMETER * Math.PI;
     public static final double SPOOL_ROTATIONS_PER_METER = 1/DISTANCE_PER_SPOOL_REVOLUTION_METERS;

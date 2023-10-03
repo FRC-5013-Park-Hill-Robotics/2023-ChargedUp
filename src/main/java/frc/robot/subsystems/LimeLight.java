@@ -73,13 +73,14 @@ public class LimeLight extends SubsystemBase {
         if (field.isPoseWithinArea(botpose)) {
           if (drivebase.getPose().getTranslation().getDistance(botpose.getTranslation()) < 0.33
               || trust || result.targets_Fiducials.length > 1) {
-            drivebase.addVisionMeasurement(
+            /**drivebase.addVisionMeasurement(
                 botpose,
                 Timer.getFPGATimestamp()
                     - (result.latency_capture / 1000.0)
                     - (result.latency_pipeline / 1000.0),
                 true,
                 1.0);
+            **/
           } else {
             distanceError++;
             SmartDashboard.putNumber("Limelight Error", distanceError);
