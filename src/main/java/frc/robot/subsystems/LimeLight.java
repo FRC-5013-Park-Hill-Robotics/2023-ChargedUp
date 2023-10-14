@@ -19,11 +19,12 @@ public class LimeLight extends SubsystemBase {
   /** Creates a new LimeLight. */
   public static final RectanglePoseArea field =
   new RectanglePoseArea(new Translation2d(0.0, 0.0), new Translation2d(16.54, 8.02));
-  private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  private NetworkTableEntry tx = table.getEntry("tx");
-  private NetworkTableEntry ty = table.getEntry("ty");
-  private NetworkTableEntry ta = table.getEntry("ta");
-  private NetworkTableEntry tv = table.getEntry("tv");
+  private NetworkTable table;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  private NetworkTableEntry tv;
+  private boolean aprilTagViable;
   private RobotContainer m_robotContainer;
   Alliance alliance;
   private Boolean enable = true;
@@ -31,7 +32,7 @@ public class LimeLight extends SubsystemBase {
   private int fieldError = 0;
   private int distanceError = 0;
   private Pose2d botpose;
-  public LimeLight() {
+  public LimeLight(String name, boolean aprilTagViable) {
     /**
      * tx - Horizontal Offset
      * ty - Vertical Offset 
@@ -39,11 +40,15 @@ public class LimeLight extends SubsystemBase {
      * tv - Target Visible
      */
 
-    
+    this.table = NetworkTableInstance.getDefault().getTable(name);
+
+    this.aprilTagViable = aprilTagViable;
+
     this.tx = table.getEntry("tx");
     this.ty = table.getEntry("ty");
     this.ta = table.getEntry("ta");
     this.tv = table.getEntry("tv");
+
   }
 
   @Override
@@ -60,38 +65,42 @@ public class LimeLight extends SubsystemBase {
     SmartDashboard.putNumber("LimelightX", x);
     SmartDashboard.putNumber("LimelightY", y);
     SmartDashboard.putNumber("LimelightArea", area);
-    Drivetrain drivebase = RobotContainer.getInstance().getDrivetrain();
-    LimelightHelpers.Results result =
-          LimelightHelpers.getLatestResults("limelight").targetingResults;
-      if (!(result.botpose[0] == 0 && result.botpose[1] == 0)) {
-        if (alliance == Alliance.Blue) {
-          botpose = LimelightHelpers.toPose2D(result.botpose_wpiblue);
-        } else if (alliance == Alliance.Red) {
-          botpose = LimelightHelpers.toPose2D(result.botpose_wpired);
-        }
-        if (botpose != null){
-        if (field.isPoseWithinArea(botpose)) {
-          if (drivebase.getPose().getTranslation().getDistance(botpose.getTranslation()) < 0.33
-              || trust || result.targets_Fiducials.length > 1) {
-            /**drivebase.addVisionMeasurement(
-                botpose,
-                Timer.getFPGATimestamp()
-                    - (result.latency_capture / 1000.0)
-                    - (result.latency_pipeline / 1000.0),
-                true,
-                1.0);
-            **/
-          } else {
-            distanceError++;
-            SmartDashboard.putNumber("Limelight Error", distanceError);
+
+
+    if (aprilTagViable) {
+
+      Drivetrain drivebase = RobotContainer.getInstance().getDrivetrain();
+      LimelightHelpers.Results result =
+            LimelightHelpers.getLatestResults("limelight").targetingResults;
+        if (!(result.botpose[0] == 0 && result.botpose[1] == 0)) {
+          if (alliance == Alliance.Blue) {
+            botpose = LimelightHelpers.toPose2D(result.botpose_wpiblue);
+          } else if (alliance == Alliance.Red) {
+            botpose = LimelightHelpers.toPose2D(result.botpose_wpired);
           }
-        } else {
-          fieldError++;
-          SmartDashboard.putNumber("Field Error", fieldError);
+          if (botpose != null){
+          if (field.isPoseWithinArea(botpose)) {
+            if (drivebase.getPose().getTranslation().getDistance(botpose.getTranslation()) < 0.33
+                || trust || result.targets_Fiducials.length > 1) {
+              /**drivebase.addVisionMeasurement(
+                  botpose,
+                  Timer.getFPGATimestamp()
+                      - (result.latency_capture / 1000.0)
+                      - (result.latency_pipeline / 1000.0),
+                  true,
+                  1.0);
+              **/
+            } else {
+              distanceError++;
+              SmartDashboard.putNumber("Limelight Error", distanceError);
+            }
+          } else {
+            fieldError++;
+            SmartDashboard.putNumber("Field Error", fieldError);
+          }
         }
       }
     }
-
   }
 
   public void setTrust(boolean newTrust){
