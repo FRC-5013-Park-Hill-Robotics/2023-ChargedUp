@@ -56,7 +56,7 @@ public class ArmConstants {
     public static final class ExtensionSetpoints {
         //
         public static final double LOW = 0.05;
-        public static final double MID = 0.3;
+        public static final double MID = 0.26;
         public static final double HIGH = 0.84;
         public static final double DOUBLE_SUBSTATION = 0.2;
 
@@ -66,9 +66,9 @@ public class ArmConstants {
 
     public static final class RotationSetpoints {
         //in degrees initially, conv to rad
-        public static final double LOW_RADIANS = Units.degreesToRadians(339.1);
-        public static final double MID_RADIANS = Units.degreesToRadians(53);
-        public static final double HIGH_RADIANS = Units.degreesToRadians(53);
+        public static final double LOW_RADIANS = Units.degreesToRadians(338.1);
+        public static final double MID_RADIANS = Units.degreesToRadians(51);
+        public static final double HIGH_RADIANS = Units.degreesToRadians(49);
         public static final double DOUBLE_SUBSTATION_RADIANS = Units.degreesToRadians(69.5);
 
         public static final double GROUND_CONE_RADIANS = Units.degreesToRadians(342.1);

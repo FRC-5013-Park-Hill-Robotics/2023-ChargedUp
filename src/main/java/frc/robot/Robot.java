@@ -40,10 +40,10 @@ public class Robot extends TimedRobot {
         if (pv!= null){
           pv.initialize();
         }
-        LimeLight frontLL = m_robotContainer.getFrontLimelight();
-        LimeLight backLL = m_robotContainer.getBackLimelight();
-        frontLL.setAlliance(alliance);
-        backLL.setAlliance(alliance);
+        // LimeLight frontLL = m_robotContainer.getFrontLimelight();
+        // LimeLight backLL = m_robotContainer.getBackLimelight();
+        // frontLL.setAlliance(alliance);
+        // backLL.setAlliance(alliance);
       }
   }
   @Override
