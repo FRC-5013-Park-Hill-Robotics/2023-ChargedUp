@@ -207,8 +207,8 @@ public class PathPlannerCommandFactory {
         .andThen(fullAuto)
         .andThen(new WaitCommand(0.5))
         .andThen(container.getIntake()::stop)
-        .andThen(new ArmExtendAndRotate(container.getArm(),0, Math.PI/2)
-        .alongWith(leg2));
+        .andThen(new ArmExtendAndRotate(container.getArm(),0, Math.PI/2));
+        //.alongWith(leg2));
     }
 
     public static Command resetDrive(Drivetrain drive){
