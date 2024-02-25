@@ -2,7 +2,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Arm Rotation PID Controller": "PIDController"
+      "/SmartDashboard/Arm Rotation PID Controller": "PIDController",
+      "/SmartDashboard/Field": "Field2d"
     }
   }
 }
