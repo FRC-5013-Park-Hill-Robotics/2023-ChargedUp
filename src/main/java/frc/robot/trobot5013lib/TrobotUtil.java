@@ -25,4 +25,17 @@ public class TrobotUtil {
 
 		return value;
 	}
+	
+	public static double deadband(double min, double value) {
+		// sets value to 0 if below min, otherwise normalizes between min and +/- 1
+		if (Math.abs(value) < min) {
+			value = 0;
+		} else if (value > 0) { // positive 1 is max
+			value = (value - min)/(min-1);
+		} else { // negative 1 is max
+			value = (value - min)/(min+1);
+		}
+
+		return value;
+	}
 }
